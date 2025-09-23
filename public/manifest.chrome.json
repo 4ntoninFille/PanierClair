@@ -14,14 +14,15 @@
     "http://127.0.0.1/*",
     "https://aletheia-server-1038641305939.europe-west9.run.app/*",
     "http://35.180.111.230:8010/*",
-    "https://www.intermarche.com/*"
+    "https://www.intermarche.com/*",
+    "https://www.carrefour.fr/"
   ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["https://www.intermarche.com/*"],
+      "matches": ["https://www.intermarche.com/*", "https://www.carrefour.fr/*"],
       "js": ["content.js"]
     }
   ],
@@ -35,7 +36,7 @@
   "web_accessible_resources": [
     {
       "resources": ["assets/*"],
-      "matches": ["https://www.intermarche.com/*"]
+      "matches": ["https://www.intermarche.com/*", "https://www.carrefour.fr/*"]
     }
   ]
 }

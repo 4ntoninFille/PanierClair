@@ -8,7 +8,8 @@
     "http://127.0.0.1/*",
     "https://aletheia-server-1038641305939.europe-west9.run.app/*",
     "http://35.180.111.230:8010/*",
-    "https://www.intermarche.com/*"
+    "https://www.intermarche.com/*",
+    "https://www.carrefour.fr/"
   ],
   "icons": {
     "16": "icons/icon-16.png",
@@ -22,7 +23,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.intermarche.com/*"],
+      "matches": ["https://www.intermarche.com/*", "https://www.carrefour.fr/*"],
       "js": ["content.js"]
     }
   ],
