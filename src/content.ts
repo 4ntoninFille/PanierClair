@@ -144,66 +144,61 @@ function processProduct(
 
 // Function to process all product items in the grid
 function processProductGrid(): void {
-  const productGrid = document.querySelector('.stime-product-list__grid') as HTMLElement | null;
-  if (productGrid) {
-    const productItems = document.querySelectorAll<HTMLElement>('[data-testid="product-layout"]');
-    const barcodes: string[] = [];
+  const productItems = document.querySelectorAll<HTMLElement>('[data-testid="product-layout"]');
+  const barcodes: string[] = [];
 
-    productItems.forEach(productElement => {
-      if (!productElement.dataset.loaderAdded) {
-        const productLink = productElement.querySelector(
-          'a.link.link--link.productCard__link',
-        ) as HTMLAnchorElement | null;
-        if (productLink) {
-          const href = productLink.getAttribute('href');
-          if (href) {
-            const barcode = extractBarcodeFromURL(href);
-            console.log('Barcode found:', barcode);
-            if (barcode) {
-              barcodes.push(barcode);
-              // Add loader to product element just above the price element
-              const loader = createLoader();
-              const priceElement = productElement.querySelector('.stime-product--footer__prices');
-              if (priceElement && priceElement.parentNode) {
-                priceElement.parentNode.insertBefore(loader, priceElement);
-              } else {
-                productElement.appendChild(loader);
-              }
-              productElement.dataset.loaderAdded = 'true';
+  productItems.forEach(productElement => {
+    if (!productElement.dataset.loaderAdded) {
+      const productLink = productElement.querySelector(
+        'a.link.link--link.productCard__link',
+      ) as HTMLAnchorElement | null;
+      if (productLink) {
+        const href = productLink.getAttribute('href');
+        if (href) {
+          const barcode = extractBarcodeFromURL(href);
+          console.log('Barcode found:', barcode);
+          if (barcode) {
+            barcodes.push(barcode);
+            // Add loader to product element just above the price element
+            const loader = createLoader();
+            const priceElement = productElement.querySelector('.stime-product--footer__prices');
+            if (priceElement && priceElement.parentNode) {
+              priceElement.parentNode.insertBefore(loader, priceElement);
+            } else {
+              productElement.appendChild(loader);
             }
+            productElement.dataset.loaderAdded = 'true';
           }
         }
       }
-    });
-
-    if (barcodes.length > 0) {
-      // Send message to background script with the extracted barcodes
-      console.log('ready to send message');
-      chrome.runtime.sendMessage({ type: 'getProductsInfo', barcodes: barcodes }, response => {
-        if (response && response.products) {
-          productItems.forEach(productElement => {
-            const productLink = productElement.querySelector(
-              'a.link.link--link.productCard__link',
-            ) as HTMLAnchorElement | null;
-            const href = productLink?.getAttribute('href');
-            const barcode = href ? extractBarcodeFromURL(href) : null;
-            if (!barcode) return;
-            const productInfo = response.products.find((product: { barcode: string }) => product.barcode === barcode);
-            console.log('processing product:', productInfo);
-            const loader = productElement.querySelector('.loader');
-            // Remove loader
-            if (loader) {
-              loader.remove();
-            }
-            if (productInfo) {
-              processProduct(productElement, productInfo);
-            }
-          });
-        }
-      });
     }
-  } else {
-    console.log('Product grid not found');
+  });
+
+  if (barcodes.length > 0) {
+    // Send message to background script with the extracted barcodes
+    console.log('ready to send message');
+    chrome.runtime.sendMessage({ type: 'getProductsInfo', barcodes: barcodes }, response => {
+      if (response && response.products) {
+        productItems.forEach(productElement => {
+          const productLink = productElement.querySelector(
+            'a.link.link--link.productCard__link',
+          ) as HTMLAnchorElement | null;
+          const href = productLink?.getAttribute('href');
+          const barcode = href ? extractBarcodeFromURL(href) : null;
+          if (!barcode) return;
+          const productInfo = response.products.find((product: { barcode: string }) => product.barcode === barcode);
+          console.log('processing product:', productInfo);
+          const loader = productElement.querySelector('.loader');
+          // Remove loader
+          if (loader) {
+            loader.remove();
+          }
+          if (productInfo) {
+            processProduct(productElement, productInfo);
+          }
+        });
+      }
+    });
   }
 }
 
