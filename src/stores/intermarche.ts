@@ -26,7 +26,9 @@ export class IntermarcheStore extends BaseStore {
     const results: ProductWithBarcode[] = [];
 
     document.querySelectorAll<HTMLElement>('[data-testid="product-layout"]').forEach(productElement => {
-      const productLink = productElement.querySelector('a.link.link--link.productCard__link') as HTMLAnchorElement | null;
+      const productLink = productElement.querySelector(
+        'a.link.link--link.productCard__link',
+      ) as HTMLAnchorElement | null;
       const href = productLink?.getAttribute('href');
       const barcode = href ? extractBarcodeFromURL(href) : null;
       if (barcode) {
@@ -55,7 +57,7 @@ export class IntermarcheStore extends BaseStore {
   insertProductInfo(productElement: HTMLElement, infoElement: HTMLElement): void {
     // Intermarché: insert above price in a container
     const intermPrice = productElement.querySelector('.stime-product--footer__prices');
-    
+
     if (intermPrice) {
       const container = document.createElement('div');
       container.style.cssText = `
@@ -65,7 +67,7 @@ export class IntermarcheStore extends BaseStore {
         align-items: center;
       `;
       container.appendChild(infoElement);
-      
+
       if (intermPrice.parentNode) {
         intermPrice.parentNode.insertBefore(container, intermPrice);
         container.appendChild(intermPrice);

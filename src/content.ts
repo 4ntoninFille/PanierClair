@@ -17,10 +17,7 @@ let currentStore: BaseStore | null = null;
  * Initialize the appropriate store based on the current page
  */
 function initializeStore(): void {
-  const stores = [
-    new IntermarcheStore(),
-    new CarrefourStore(),
-  ];
+  const stores = [new IntermarcheStore(), new CarrefourStore()];
 
   // Find the active store
   const activeStore = stores.find(store => store.isActive());

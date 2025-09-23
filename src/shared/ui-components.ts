@@ -164,7 +164,7 @@ export function createLoader(): HTMLElement {
 export function processProductElement(
   productElement: HTMLElement,
   productInfo: ProductInfo,
-  insertionStrategy: (element: HTMLElement, infoElement: HTMLElement) => void
+  insertionStrategy: (element: HTMLElement, infoElement: HTMLElement) => void,
 ): void {
   if (productElement.dataset.processed) return;
 

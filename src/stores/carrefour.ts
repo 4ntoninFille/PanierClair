@@ -26,7 +26,9 @@ export class CarrefourStore extends BaseStore {
     const results: ProductWithBarcode[] = [];
 
     document.querySelectorAll<HTMLElement>('article.product-list-card-plp-grid').forEach(productElement => {
-      const productLink = productElement.querySelector('a.c-link.product-card-click-wrapper') as HTMLAnchorElement | null;
+      const productLink = productElement.querySelector(
+        'a.c-link.product-card-click-wrapper',
+      ) as HTMLAnchorElement | null;
       const href = productLink?.getAttribute('href');
       // Barcode is at the end of the URL, after the last '-'
       const barcode = href ? extractBarcodeFromCarrefourURL(href) : null;

@@ -40,7 +40,7 @@ export abstract class BaseStore {
    */
   processProductGrid(): void {
     console.log(`Processing ${this.storeName} product grid`);
-    
+
     const products = this.getProductElementsAndBarcodes();
     const barcodes: string[] = products.map(p => p.barcode);
 
@@ -61,7 +61,7 @@ export abstract class BaseStore {
             const productInfo = response.products.find((product: ProductInfo) => product.barcode === barcode);
             const loader = productElement.querySelector('.loader');
             if (loader) loader.remove();
-            
+
             if (productInfo) {
               processProductElement(productElement, productInfo, (element, infoElement) => {
                 this.insertProductInfo(element, infoElement);
