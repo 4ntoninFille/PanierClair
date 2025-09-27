@@ -2,11 +2,11 @@
   --bg-color: #f9fafb; /* gray-50 */
   --text-color: #111827; /* gray-900 */
   --text-secondary: #4b5563; /* gray-600 */
-  --accent-color: #3EA34B; /* custom green */
+  --accent-color: #3ea34b; /* custom green */
   --accent-hover: #2d7a37; /* darker green for hover */
   --info-bg: #ffffff; /* white */
   --border-radius: 12px;
-  --button-bg: #3EA34B; /* custom green */
+  --button-bg: #3ea34b; /* custom green */
   --button-hover: #2d7a37; /* darker green for hover */
   --shadow-color: rgba(0, 0, 0, 0.1);
 }
@@ -115,7 +115,9 @@ input:checked + .slider:before {
   margin: 14px 22px 18px 22px;
   padding: 16px 16px 12px 16px;
   font-size: 1em;
-  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px var(--shadow-color),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   border: 1px solid #e5e7eb; /* gray-200 */
 }
 .info-box h2 {
@@ -147,7 +149,9 @@ input:checked + .slider:before {
   font-size: 1em;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px var(--shadow-color),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   transition: all 0.2s ease-in-out;
   letter-spacing: 0.5px;
 }
@@ -161,10 +165,10 @@ body.night {
   --text-color: #f9fafb; /* gray-50 */
   --text-secondary: #d1d5db; /* gray-300 */
   --accent-color: #4ade80; /* lighter version of custom green for dark mode */
-  --accent-hover: #3EA34B; /* custom green */
+  --accent-hover: #3ea34b; /* custom green */
   --info-bg: #1f2937; /* gray-800 */
   --button-bg: #4ade80; /* lighter version for dark mode */
-  --button-hover: #3EA34B; /* custom green */
+  --button-hover: #3ea34b; /* custom green */
   --shadow-color: rgba(0, 0, 0, 0.3);
 }
 
