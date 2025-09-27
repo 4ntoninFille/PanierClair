@@ -1,12 +1,14 @@
 :root {
-  --bg-color: #f7f8fa;
-  --text-color: #23272f;
-  --accent-color: #3a4a5d;
-  --accent-hover: #223047;
-  --info-bg: #e9ecf1;
+  --bg-color: #f9fafb; /* gray-50 */
+  --text-color: #111827; /* gray-900 */
+  --text-secondary: #4b5563; /* gray-600 */
+  --accent-color: #3EA34B; /* custom green */
+  --accent-hover: #2d7a37; /* darker green for hover */
+  --info-bg: #ffffff; /* white */
   --border-radius: 12px;
-  --button-bg: #3a4a5d;
-  --button-hover: #223047;
+  --button-bg: #3EA34B; /* custom green */
+  --button-hover: #2d7a37; /* darker green for hover */
+  --shadow-color: rgba(0, 0, 0, 0.1);
 }
 
 body {
@@ -32,7 +34,7 @@ body {
   font-size: 1.3em;
   font-weight: 700;
   letter-spacing: 1px;
-  color: var(--accent-color);
+  color: var(--text-color);
 }
 
 .icon-btn {
@@ -63,6 +65,7 @@ body {
 .switch-label {
   font-size: 1em;
   font-weight: 500;
+  color: var(--text-secondary);
 }
 
 .switch {
@@ -83,7 +86,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #bfc5ce;
+  background-color: #d1d5db; /* gray-300 */
   border-radius: 24px;
   transition: 0.3s;
 }
@@ -107,18 +110,19 @@ input:checked + .slider:before {
 
 .info-box {
   background: var(--info-bg);
-  color: var(--text-color);
+  color: var(--text-secondary);
   border-radius: var(--border-radius);
   margin: 14px 22px 18px 22px;
   padding: 16px 16px 12px 16px;
   font-size: 1em;
-  box-shadow: 0 2px 8px rgba(58, 74, 93, 0.07);
-  border: 1px solid #d3d7de;
+  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb; /* gray-200 */
 }
 .info-box h2 {
   margin-top: 0;
   font-size: 1.1em;
-  color: var(--accent-color);
+  color: var(--text-color);
+  font-weight: 700;
 }
 .info-box a {
   color: var(--accent-color);
@@ -143,8 +147,8 @@ input:checked + .slider:before {
   font-size: 1em;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(58, 74, 93, 0.1);
-  transition: background 0.2s;
+  box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease-in-out;
   letter-spacing: 0.5px;
 }
 .toggle-btn:hover {
@@ -153,11 +157,21 @@ input:checked + .slider:before {
 
 /* Night mode */
 body.night {
-  --bg-color: #23272f;
-  --text-color: #e0e3e8;
-  --accent-color: #7b8ca6;
-  --accent-hover: #5a6b85;
-  --info-bg: #2e3440;
-  --button-bg: #5a6b85;
-  --button-hover: #3a4a5d;
+  --bg-color: #111827; /* gray-900 */
+  --text-color: #f9fafb; /* gray-50 */
+  --text-secondary: #d1d5db; /* gray-300 */
+  --accent-color: #4ade80; /* lighter version of custom green for dark mode */
+  --accent-hover: #3EA34B; /* custom green */
+  --info-bg: #1f2937; /* gray-800 */
+  --button-bg: #4ade80; /* lighter version for dark mode */
+  --button-hover: #3EA34B; /* custom green */
+  --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+body.night .slider {
+  background-color: #6b7280; /* gray-500 for dark mode */
+}
+
+body.night .info-box {
+  border: 1px solid #374151; /* gray-700 for dark mode */
 }
