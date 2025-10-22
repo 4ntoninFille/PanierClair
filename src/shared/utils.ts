@@ -34,7 +34,7 @@ export function debounce<T extends (...args: unknown[]) => void>(func: T, delay:
  */
 export function getNutriScoreImagePath(score: string): string {
   const normalizedScore = score.toUpperCase();
-  if (normalizedScore === 'UNKNOWN') {
+  if (normalizedScore === 'UNKNOWN' || normalizedScore === 'NA') {
     return chrome.runtime.getURL('assets/nutriscore/nutriscore-unknown.svg');
   }
   if (normalizedScore === 'NOT-APPLICABLE') {
@@ -49,7 +49,7 @@ export function getNutriScoreImagePath(score: string): string {
  */
 export function getEcoScoreImagePath(score: string): string {
   const normalizedScore = score.toUpperCase();
-  if (normalizedScore === 'UNKNOWN') {
+  if (normalizedScore === 'UNKNOWN' || normalizedScore === 'NA') {
     return chrome.runtime.getURL('assets/ecoscore/green-score-unknown.svg');
   }
   if (normalizedScore === 'NOT-APPLICABLE') {
@@ -66,10 +66,36 @@ export function getEcoScoreImagePath(score: string): string {
 }
 
 /**
+ * Function to get NOVA group image path
+ */
+export function getNovaGroupImagePath(score: string): string {
+  const normalizedScore = score.toUpperCase();
+  if (normalizedScore === 'UNKNOWN' || normalizedScore === 'NA') {
+    return chrome.runtime.getURL('assets/nova/nova-group-unknown.svg');
+  }
+  if (normalizedScore === 'NOT-APPLICABLE') {
+    return chrome.runtime.getURL('assets/nova/nova-group-not-applicable.svg');
+  }
+  const extensionUrl = chrome.runtime.getURL(`assets/nova/nova-group-${normalizedScore.toLowerCase()}.svg`);
+  return extensionUrl;
+}
+
+/**
  * Function to get score display with image
  */
-export function getScoreDisplay(score: string, isEcoScore: boolean = false): string {
-  const imagePath = isEcoScore ? getEcoScoreImagePath(score) : getNutriScoreImagePath(score);
+export function getScoreDisplay(score: string, scoreType: 'nutri' | 'eco' | 'nova'): string {
+  let imagePath: string;
+  switch (scoreType) {
+    case 'eco':
+      imagePath = getEcoScoreImagePath(score);
+      break;
+    case 'nova':
+      imagePath = getNovaGroupImagePath(score);
+      break;
+    case 'nutri':
+    default:
+      imagePath = getNutriScoreImagePath(score);
+  }
   return `<img src="${imagePath}" alt="${score.toUpperCase()} Score" style="height: 50px; vertical-align: middle;" />`;
 }
 
