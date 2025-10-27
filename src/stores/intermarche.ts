@@ -25,16 +25,54 @@ export class IntermarcheStore extends BaseStore {
   getProductElementsAndBarcodes(): ProductWithBarcode[] {
     const results: ProductWithBarcode[] = [];
 
-    document.querySelectorAll<HTMLElement>('[data-testid="product-layout"]').forEach(productElement => {
-      const productLink = productElement.querySelector(
-        'a.link.link--link.productCard__link',
-      ) as HTMLAnchorElement | null;
-      const href = productLink?.getAttribute('href');
-      const barcode = href ? extractBarcodeFromURL(href) : null;
-      if (barcode) {
-        results.push({ productElement, barcode });
+    try {
+      const productElements = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-testid="product-layout"]'),
+      );
+
+      if (productElements.length === 0) {
+        console.error('[Intermarché] No product elements found on the page.');
+        return results;
       }
-    });
+
+      productElements.forEach((productElement, index) => {
+        const productLink = productElement.querySelector(
+          // match anchors that contain the productCard__link class (Intermarché uses different class combos)
+          'a.productCard__link, a.link.productCard__link, a.link--link.productCard__link',
+        ) as HTMLAnchorElement | null ?? productElement.querySelector<HTMLAnchorElement>(
+          // fallback: any product-like href
+          'a[href*="/produit/"], a[href*="/product/"]',
+        );
+
+        if (!productLink) {
+          console.warn(
+            `[Intermarché] Product link not found for product element at index ${index}.`,
+            productElement,
+          );
+          return;
+        }
+
+        // prefer the raw href attribute, otherwise use the resolved href
+        const href = productLink.getAttribute('href') || productLink.href;
+        if (!href) {
+          console.warn(
+            `[Intermarché] href missing on product link for product at index ${index}.`,
+            productLink,
+          );
+          return;
+        }
+
+        const barcode = extractBarcodeFromURL(href);
+        if (!barcode) {
+          console.warn(`[Intermarché] Could not extract barcode from URL: ${href}`);
+          return;
+        }
+
+        results.push({ productElement, barcode });
+      });
+    } catch (err) {
+      console.error('[Intermarché] Error while getting product elements and barcodes:', err);
+    }
 
     return results;
   }
