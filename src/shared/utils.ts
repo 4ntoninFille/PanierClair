@@ -29,74 +29,95 @@ export function debounce<T extends (...args: unknown[]) => void>(func: T, delay:
   }) as T;
 }
 
+type Variant = 'full' | 'icon';
+
 /**
  * Function to get Nutri-Score image path
  */
-export function getNutriScoreImagePath(score: string): string {
+export function getNutriScoreImagePath(score: string, variant: Variant = 'full'): string {
   const normalizedScore = score.toUpperCase();
+
   if (normalizedScore === 'UNKNOWN' || normalizedScore === 'NA') {
+    // Use same unknown asset for both variants if no icon exists
     return chrome.runtime.getURL('assets/nutriscore/nutriscore-unknown.svg');
   }
   if (normalizedScore === 'NOT-APPLICABLE') {
     return chrome.runtime.getURL('assets/nutriscore/nutriscore-not-applicable.svg');
   }
-  const extensionUrl = chrome.runtime.getURL(`assets/nutriscore/nutriscore-${normalizedScore.toLowerCase()}.svg`);
-  return extensionUrl;
+
+  // For icons, we append '-icon' before .svg (if such assets exist)
+  const baseName = `nutriscore-${normalizedScore.toLowerCase()}`;
+  const fileName = variant === 'icon' ? `${baseName}-icon.svg` : `${baseName}.svg`;
+  return chrome.runtime.getURL(`assets/nutriscore/${fileName}`);
 }
 
 /**
  * Function to get Eco-Score image path
  */
-export function getEcoScoreImagePath(score: string): string {
+export function getEcoScoreImagePath(score: string, variant: Variant = 'full'): string {
   const normalizedScore = score.toUpperCase();
+
   if (normalizedScore === 'UNKNOWN' || normalizedScore === 'NA') {
     return chrome.runtime.getURL('assets/ecoscore/green-score-unknown.svg');
   }
   if (normalizedScore === 'NOT-APPLICABLE') {
     return chrome.runtime.getURL('assets/ecoscore/green-score-not-applicable.svg');
   }
-  let extensionUrl;
-  // Handle special case for A+ if it exists
+
+  // Special case for A+ (full: green-score-a-plus.svg, icon: green-score-a-icon.svg)
   if (normalizedScore === 'A+') {
-    extensionUrl = chrome.runtime.getURL('assets/ecoscore/green-score-a-plus.svg');
-  } else {
-    extensionUrl = chrome.runtime.getURL(`assets/ecoscore/green-score-${normalizedScore.toLowerCase()}.svg`);
+    const fileName = variant === 'icon' ? 'green-score-a-icon.svg' : 'green-score-a-plus.svg';
+    return chrome.runtime.getURL(`assets/ecoscore/${fileName}`);
   }
-  return extensionUrl;
+
+  // Normal cases: append '-icon' for icon variant
+  const base = `green-score-${normalizedScore.toLowerCase()}`;
+  const fileName = variant === 'icon' ? `${base}-icon.svg` : `${base}.svg`;
+  return chrome.runtime.getURL(`assets/ecoscore/${fileName}`);
 }
 
 /**
  * Function to get NOVA group image path
  */
-export function getNovaGroupImagePath(score: string): string {
+export function getNovaGroupImagePath(score: string, variant: Variant = 'full'): string {
   const normalizedScore = score.toUpperCase();
+
   if (normalizedScore === 'UNKNOWN' || normalizedScore === 'NA') {
     return chrome.runtime.getURL('assets/nova/nova-group-unknown.svg');
   }
   if (normalizedScore === 'NOT-APPLICABLE') {
     return chrome.runtime.getURL('assets/nova/nova-group-not-applicable.svg');
   }
-  const extensionUrl = chrome.runtime.getURL(`assets/nova/nova-group-${normalizedScore.toLowerCase()}.svg`);
-  return extensionUrl;
+
+  const baseName = `nova-group-${normalizedScore.toLowerCase()}`;
+  const fileName = variant === 'icon' ? `${baseName}-icon.svg` : `${baseName}.svg`;
+  return chrome.runtime.getURL(`assets/nova/${fileName}`);
 }
 
 /**
  * Function to get score display with image
+ * Accepts optional variant to request icon-sized assets and adjusts height accordingly.
  */
-export function getScoreDisplay(score: string, scoreType: 'nutri' | 'eco' | 'nova'): string {
+export function getScoreDisplay(
+  score: string,
+  scoreType: 'nutri' | 'eco' | 'nova',
+  variant: Variant = 'full',
+): string {
   let imagePath: string;
   switch (scoreType) {
     case 'eco':
-      imagePath = getEcoScoreImagePath(score);
+      imagePath = getEcoScoreImagePath(score, variant);
       break;
     case 'nova':
-      imagePath = getNovaGroupImagePath(score);
+      imagePath = getNovaGroupImagePath(score, variant);
       break;
     case 'nutri':
     default:
-      imagePath = getNutriScoreImagePath(score);
+      imagePath = getNutriScoreImagePath(score, variant);
   }
-  return `<img src="${imagePath}" alt="${score.toUpperCase()} Score" style="height: 50px; vertical-align: middle;" />`;
+
+  const height = variant === 'icon' ? 24 : 50; // icon smaller by default
+  return `<img src="${imagePath}" alt="${score.toUpperCase()} Score" style="height: ${height}px; vertical-align: middle;" />`;
 }
 
 /**

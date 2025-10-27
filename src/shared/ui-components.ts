@@ -14,6 +14,7 @@ export function createProductInfo(
   nutriScore: string,
   ecoScore: string,
   novaGroup: string,
+  isCompact: boolean,
 ): HTMLElement {
   const infoElement = document.createElement('div');
   infoElement.className = 'panierclair-info';
@@ -133,9 +134,9 @@ export function createProductInfo(
     ${interrogationLink}
     <div style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; position: relative;">
       <div class="score-row">
-        ${getScoreDisplay(nutriScore, 'nutri').replace('<svg', '<svg class="score-svg"')}
-        ${getScoreDisplay(ecoScore, 'eco').replace('<svg', '<svg class="score-svg"')}
-        ${getScoreDisplay(novaGroup, 'nova').replace('<svg', '<svg class="score-svg"')}
+        ${getScoreDisplay(nutriScore, 'nutri', isCompact ? 'icon' : 'full').replace('<svg', '<svg class="score-svg"')}
+        ${getScoreDisplay(ecoScore, 'eco', isCompact ? 'icon' : 'full').replace('<svg', '<svg class="score-svg"')}
+        ${getScoreDisplay(novaGroup, 'nova', isCompact ? 'icon' : 'full').replace('<svg', '<svg class="score-svg"')}
       </div>
     </div>
   `;
@@ -178,6 +179,7 @@ export function createLoader(): HTMLElement {
 export function processProductElement(
   productElement: HTMLElement,
   productInfo: ProductInfo,
+  isCompact: boolean,
   insertionStrategy: (element: HTMLElement, infoElement: HTMLElement) => void,
 ): void {
   if (productElement.dataset.processed) return;
@@ -189,6 +191,7 @@ export function processProductElement(
     productInfo.nutriScore,
     productInfo.ecoScore,
     productInfo.novaGroup,
+    isCompact,
   );
 
   insertionStrategy(productElement, infoElement);

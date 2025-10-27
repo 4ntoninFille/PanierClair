@@ -38,11 +38,16 @@ export abstract class BaseStore {
   /**
    * Process all product items in the grid
    */
-  processProductGrid(): void {
+  processProductGrid(isCompact: boolean): void {
     console.log(`Processing ${this.storeName} product grid`);
 
     const products = this.getProductElementsAndBarcodes();
     const barcodes: string[] = products.map(p => p.barcode);
+
+    if (products.length === 0) {
+      console.log('No products found to process');
+      return;
+    }
 
     // Add loaders to all product elements
     products.forEach(({ productElement }) => {
@@ -63,7 +68,7 @@ export abstract class BaseStore {
             if (loader) loader.remove();
 
             if (productInfo) {
-              processProductElement(productElement, productInfo, (element, infoElement) => {
+              processProductElement(productElement, productInfo, isCompact, (element, infoElement) => {
                 this.insertProductInfo(element, infoElement);
               });
             }
