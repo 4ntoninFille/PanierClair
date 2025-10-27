@@ -26,9 +26,7 @@ export class IntermarcheStore extends BaseStore {
     const results: ProductWithBarcode[] = [];
 
     try {
-      const productElements = Array.from(
-        document.querySelectorAll<HTMLElement>('[data-testid="product-layout"]'),
-      );
+      const productElements = Array.from(document.querySelectorAll<HTMLElement>('[data-testid="product-layout"]'));
 
       if (productElements.length === 0) {
         console.error('[Intermarché] No product elements found on the page.');
@@ -36,29 +34,25 @@ export class IntermarcheStore extends BaseStore {
       }
 
       productElements.forEach((productElement, index) => {
-        const productLink = productElement.querySelector(
-          // match anchors that contain the productCard__link class (Intermarché uses different class combos)
-          'a.productCard__link, a.link.productCard__link, a.link--link.productCard__link',
-        ) as HTMLAnchorElement | null ?? productElement.querySelector<HTMLAnchorElement>(
-          // fallback: any product-like href
-          'a[href*="/produit/"], a[href*="/product/"]',
-        );
+        const productLink =
+          (productElement.querySelector(
+            // match anchors that contain the productCard__link class (Intermarché uses different class combos)
+            'a.productCard__link, a.link.productCard__link, a.link--link.productCard__link',
+          ) as HTMLAnchorElement | null) ??
+          productElement.querySelector<HTMLAnchorElement>(
+            // fallback: any product-like href
+            'a[href*="/produit/"], a[href*="/product/"]',
+          );
 
         if (!productLink) {
-          console.warn(
-            `[Intermarché] Product link not found for product element at index ${index}.`,
-            productElement,
-          );
+          console.warn(`[Intermarché] Product link not found for product element at index ${index}.`, productElement);
           return;
         }
 
         // prefer the raw href attribute, otherwise use the resolved href
         const href = productLink.getAttribute('href') || productLink.href;
         if (!href) {
-          console.warn(
-            `[Intermarché] href missing on product link for product at index ${index}.`,
-            productLink,
-          );
+          console.warn(`[Intermarché] href missing on product link for product at index ${index}.`, productLink);
           return;
         }
 
