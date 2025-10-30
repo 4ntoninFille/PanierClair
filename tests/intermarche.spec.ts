@@ -6,8 +6,7 @@ import stealth from 'puppeteer-extra-plugin-stealth';
 chromium.use(stealth());
 
 // Helper functions for human-like behavior
-const randomDelay = (min: number, max: number) => 
-  Math.floor(Math.random() * (max - min + 1) + min);
+const randomDelay = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1) + min);
 
 async function humanLikeMouseMove(page: Page) {
   const x = randomDelay(100, 800);
@@ -20,7 +19,7 @@ async function humanLikeScroll(page: Page) {
   await page.evaluate(() => {
     window.scrollBy({
       top: Math.random() * 200,
-      behavior: 'smooth'
+      behavior: 'smooth',
     });
   });
   await page.waitForTimeout(randomDelay(500, 1500));
@@ -36,16 +35,16 @@ async function humanLikeType(page: Page, selector: string, text: string) {
       await page.waitForTimeout(randomDelay(200, 500));
     }
   }
-  
+
   await page.click(selector);
   await page.waitForTimeout(randomDelay(300, 800));
-  
+
   // Clear existing content naturally
   await page.keyboard.down('Control');
   await page.keyboard.press('a');
   await page.keyboard.up('Control');
   await page.waitForTimeout(randomDelay(100, 300));
-  
+
   // Type each character with random delays
   for (const char of text) {
     await page.keyboard.type(char);
@@ -62,7 +61,7 @@ async function humanLikeClick(page: Page, selector: string) {
       // Move to a random point within the element
       const targetX = box.x + randomDelay(5, box.width - 5);
       const targetY = box.y + randomDelay(5, box.height - 5);
-      
+
       await page.mouse.move(targetX, targetY, { steps: randomDelay(10, 20) });
       await page.waitForTimeout(randomDelay(200, 500));
       await page.mouse.click(targetX, targetY);
@@ -73,9 +72,7 @@ async function humanLikeClick(page: Page, selector: string) {
   }
 }
 
-  
 test.describe('IntermarcheStore Tests', () => {
-
   test('isActive should return true when product-layout elements exist', async ({ page }) => {
     await page.setContent(`
       <!DOCTYPE html>
@@ -175,11 +172,11 @@ test.describe('IntermarcheStore Tests', () => {
 
       const store = new IntermarcheStore();
       const products = store.getProductElementsAndBarcodes();
-      
+
       return {
         count: products.length,
         barcodes: products.map(p => p.barcode),
-        hasValidElements: products.every(p => p.productElement instanceof HTMLElement)
+        hasValidElements: products.every(p => p.productElement instanceof HTMLElement),
       };
     });
 
@@ -389,7 +386,7 @@ test.describe('IntermarcheStore Tests', () => {
         width: styles.width,
         display: styles.display,
         flexDirection: styles.flexDirection,
-        alignItems: styles.alignItems
+        alignItems: styles.alignItems,
       };
     });
 
@@ -547,13 +544,13 @@ test.describe('IntermarcheStore Tests', () => {
       }
 
       const store = new IntermarcheStore();
-      
+
       // Test isActive
       const isActive = store.isActive();
-      
+
       // Test getProductElementsAndBarcodes
       const products = store.getProductElementsAndBarcodes();
-      
+
       // Test insertProductInfo for each product
       products.forEach((product, index) => {
         const infoElement = document.createElement('div');
@@ -566,7 +563,7 @@ test.describe('IntermarcheStore Tests', () => {
         isActive,
         productCount: products.length,
         barcodes: products.map(p => p.barcode),
-        infoContainersCount: document.querySelectorAll('.info-container').length
+        infoContainersCount: document.querySelectorAll('.info-container').length,
       };
     });
 
@@ -584,365 +581,390 @@ test.describe('IntermarcheStore Tests', () => {
   // INTERNET MARCHE STORE - E2E TESTS
 
   test('navigate through store selection and validate structure', async () => {
-  // Create a persistent user data directory
-  const userDataDir = './user_data_intermarche';
-  
-  const browser = await chromium.launchPersistentContext(userDataDir, {
-    headless: false,
-    slowMo: randomDelay(50, 150),
-    viewport: { width: 1920, height: 1080 },
-    userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
-    locale: 'fr-FR',
-    timezoneId: 'Europe/Paris',
-    permissions: ['geolocation'],
-    geolocation: { latitude: 48.8566, longitude: 2.3522 },
-    colorScheme: 'light',
-    deviceScaleFactor: 1,
-    hasTouch: false,
-    acceptDownloads: false,
-    extraHTTPHeaders: {
-      'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.8',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-      'Sec-Ch-Ua': '"Chromium";v="131", "Not_A Brand";v="24", "Google Chrome";v="131"',
-      'Sec-Ch-Ua-Mobile': '?0',
-      'Sec-Ch-Ua-Platform': '"Windows"',
-      'Upgrade-Insecure-Requests': '1',
-      'Sec-Fetch-Site': 'none',
-      'Sec-Fetch-Mode': 'navigate',
-      'Sec-Fetch-User': '?1',
-      'Sec-Fetch-Dest': 'document'
-    },
-    args: [
-      '--disable-blink-features=AutomationControlled',
-      '--disable-features=IsolateOrigins,site-per-process',
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-web-security',
-      '--disable-features=BlockInsecurePrivateNetworkRequests',
-      '--window-size=1920,1080',
-      '--start-maximized'
-    ]
-  });
+    // Create a persistent user data directory
+    const userDataDir = './user_data_intermarche';
 
-  const page = await browser.newPage();
-
-  // Enhanced init script
-  await page.addInitScript(() => {
-    // Remove webdriver property
-    Object.defineProperty(navigator, 'webdriver', {
-      get: () => undefined,
-      configurable: true
+    const browser = await chromium.launchPersistentContext(userDataDir, {
+      headless: false,
+      slowMo: randomDelay(50, 150),
+      viewport: { width: 1920, height: 1080 },
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+      locale: 'fr-FR',
+      timezoneId: 'Europe/Paris',
+      permissions: ['geolocation'],
+      geolocation: { latitude: 48.8566, longitude: 2.3522 },
+      colorScheme: 'light',
+      deviceScaleFactor: 1,
+      hasTouch: false,
+      acceptDownloads: false,
+      extraHTTPHeaders: {
+        'Accept-Language': 'fr-FR,fr;q=0.9,en;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Sec-Ch-Ua': '"Chromium";v="131", "Not_A Brand";v="24", "Google Chrome";v="131"',
+        'Sec-Ch-Ua-Mobile': '?0',
+        'Sec-Ch-Ua-Platform': '"Windows"',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-User': '?1',
+        'Sec-Fetch-Dest': 'document',
+      },
+      args: [
+        '--disable-blink-features=AutomationControlled',
+        '--disable-features=IsolateOrigins,site-per-process',
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-web-security',
+        '--disable-features=BlockInsecurePrivateNetworkRequests',
+        '--window-size=1920,1080',
+        '--start-maximized',
+      ],
     });
 
-    // Delete automation properties
-    // Remove webdriver property from navigator prototype safely
-    const navProto = (navigator as unknown as { __proto__?: Record<string, unknown> }).__proto__;
-    if (navProto && Object.prototype.hasOwnProperty.call(navProto, 'webdriver')) {
-      delete (navProto as Record<string, unknown>)['webdriver'];
-    }
+    const page = await browser.newPage();
 
-    // Mock plugins with more realistic data (typed locally)
-    type FakePlugin = { name: string; filename: string; description: string };
-    type FakePluginArray = {
-      length: number;
-      [index: number]: FakePlugin;
-      item(i: number): FakePlugin | undefined;
-      namedItem(name: string): FakePlugin | null;
-      refresh(): void;
-    };
-    Object.defineProperty(navigator, 'plugins', {
-      get: () => {
-        const pluginArray = {
-          length: 5,
-          0: { name: 'Chrome PDF Plugin', filename: 'internal-pdf-viewer', description: 'Portable Document Format' },
-          1: { name: 'Chrome PDF Viewer', filename: 'mhjfbmdgcfjbbpaeojofohoefgiehjai', description: '' },
-          2: { name: 'Native Client', filename: 'internal-nacl-plugin', description: '' },
-          3: { name: 'Chromium PDF Plugin', filename: 'internal-pdf-viewer', description: 'Portable Document Format' },
-          4: { name: 'Microsoft Edge PDF Plugin', filename: 'internal-pdf-viewer', description: 'Portable Document Format' }
-        } as unknown as FakePluginArray;
-        pluginArray.item = (i: number) => pluginArray[i];
-        pluginArray.namedItem = (name: string) => {
-          for (let i = 0; i < pluginArray.length; i++) {
-            if (pluginArray[i].name === name) return pluginArray[i];
-          }
-          return null;
-        };
-        pluginArray.refresh = () => {};
-        return pluginArray;
-      },
-      configurable: true
-    });
+    // Enhanced init script
+    await page.addInitScript(() => {
+      // Remove webdriver property
+      Object.defineProperty(navigator, 'webdriver', {
+        get: () => undefined,
+        configurable: true,
+      });
 
-    // Set realistic languages
-    Object.defineProperty(navigator, 'languages', {
-      get: () => ['fr-FR', 'fr', 'en-US', 'en'],
-      configurable: true
-    });
-
-    Object.defineProperty(navigator, 'language', {
-      get: () => 'fr-FR',
-      configurable: true
-    });
-
-    // Mock chrome object more completely (assigned via unknown cast)
-    const fakeChrome = {
-      runtime: {
-        connect: () => {},
-        sendMessage: () => {},
-        onMessage: { addListener: () => {} }
-      },
-      app: {
-        isInstalled: false,
-        getDetails: () => null
-      },
-      webstore: {
-        onInstallStageChanged: {},
-        onDownloadProgress: {}
-      },
-      csi: () => {},
-      loadTimes: () => ({
-        requestTime: Date.now() / 1000,
-        startLoadTime: Date.now() / 1000,
-        commitLoadTime: Date.now() / 1000 + 0.5,
-        finishDocumentLoadTime: Date.now() / 1000 + 1,
-        finishLoadTime: Date.now() / 1000 + 1.5,
-        firstPaintTime: Date.now() / 1000 + 0.8,
-        firstPaintAfterLoadTime: 0,
-        navigationType: 'Other',
-        wasFetchedViaSpdy: false,
-        wasNpnNegotiated: true,
-        npnNegotiatedProtocol: 'h2',
-        wasAlternateProtocolAvailable: false,
-        connectionInfo: 'h2'
-      })
-    } as unknown;
-    (window as unknown as { chrome?: unknown }).chrome = fakeChrome;
-
-    // Override permissions using correct parameter typing
-    const originalQuery = navigator.permissions.query.bind(navigator.permissions);
-    navigator.permissions.query = (parameters: PermissionDescriptor): Promise<PermissionStatus> => {
-      if ((parameters as PermissionDescriptor).name === 'notifications') {
-        return Promise.resolve({ state: 'prompt', onchange: null } as PermissionStatus);
+      // Delete automation properties
+      // Remove webdriver property from navigator prototype safely
+      const navProto = (navigator as unknown as { __proto__?: Record<string, unknown> }).__proto__;
+      if (navProto && Object.prototype.hasOwnProperty.call(navProto, 'webdriver')) {
+        delete (navProto as Record<string, unknown>)['webdriver'];
       }
-      return originalQuery(parameters);
-    };
 
-    // Screen properties
-    Object.defineProperty(screen, 'colorDepth', { get: () => 24 });
-    Object.defineProperty(screen, 'pixelDepth', { get: () => 24 });
-    Object.defineProperty(window.screen, 'width', { get: () => 1920 });
-    Object.defineProperty(window.screen, 'height', { get: () => 1080 });
-    Object.defineProperty(window.screen, 'availWidth', { get: () => 1920 });
-    Object.defineProperty(window.screen, 'availHeight', { get: () => 1040 });
+      // Mock plugins with more realistic data (typed locally)
+      type FakePlugin = { name: string; filename: string; description: string };
+      type FakePluginArray = {
+        length: number;
+        [index: number]: FakePlugin;
+        item(i: number): FakePlugin | undefined;
+        namedItem(name: string): FakePlugin | null;
+        refresh(): void;
+      };
+      Object.defineProperty(navigator, 'plugins', {
+        get: () => {
+          const pluginArray = {
+            length: 5,
+            0: { name: 'Chrome PDF Plugin', filename: 'internal-pdf-viewer', description: 'Portable Document Format' },
+            1: { name: 'Chrome PDF Viewer', filename: 'mhjfbmdgcfjbbpaeojofohoefgiehjai', description: '' },
+            2: { name: 'Native Client', filename: 'internal-nacl-plugin', description: '' },
+            3: {
+              name: 'Chromium PDF Plugin',
+              filename: 'internal-pdf-viewer',
+              description: 'Portable Document Format',
+            },
+            4: {
+              name: 'Microsoft Edge PDF Plugin',
+              filename: 'internal-pdf-viewer',
+              description: 'Portable Document Format',
+            },
+          } as unknown as FakePluginArray;
+          pluginArray.item = (i: number) => pluginArray[i];
+          pluginArray.namedItem = (name: string) => {
+            for (let i = 0; i < pluginArray.length; i++) {
+              if (pluginArray[i].name === name) return pluginArray[i];
+            }
+            return null;
+          };
+          pluginArray.refresh = () => {};
+          return pluginArray;
+        },
+        configurable: true,
+      });
 
-    // Hardware concurrency
-    Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
+      // Set realistic languages
+      Object.defineProperty(navigator, 'languages', {
+        get: () => ['fr-FR', 'fr', 'en-US', 'en'],
+        configurable: true,
+      });
 
-    // Device memory
-    Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 });
+      Object.defineProperty(navigator, 'language', {
+        get: () => 'fr-FR',
+        configurable: true,
+      });
 
-    // Platform
-    Object.defineProperty(navigator, 'platform', { get: () => 'Win32' });
+      // Mock chrome object more completely (assigned via unknown cast)
+      const fakeChrome = {
+        runtime: {
+          connect: () => {},
+          sendMessage: () => {},
+          onMessage: { addListener: () => {} },
+        },
+        app: {
+          isInstalled: false,
+          getDetails: () => null,
+        },
+        webstore: {
+          onInstallStageChanged: {},
+          onDownloadProgress: {},
+        },
+        csi: () => {},
+        loadTimes: () => ({
+          requestTime: Date.now() / 1000,
+          startLoadTime: Date.now() / 1000,
+          commitLoadTime: Date.now() / 1000 + 0.5,
+          finishDocumentLoadTime: Date.now() / 1000 + 1,
+          finishLoadTime: Date.now() / 1000 + 1.5,
+          firstPaintTime: Date.now() / 1000 + 0.8,
+          firstPaintAfterLoadTime: 0,
+          navigationType: 'Other',
+          wasFetchedViaSpdy: false,
+          wasNpnNegotiated: true,
+          npnNegotiatedProtocol: 'h2',
+          wasAlternateProtocolAvailable: false,
+          connectionInfo: 'h2',
+        }),
+      } as unknown;
+      (window as unknown as { chrome?: unknown }).chrome = fakeChrome;
 
-    // Vendor
-    Object.defineProperty(navigator, 'vendor', { get: () => 'Google Inc.' });
-
-    // Max touch points
-    Object.defineProperty(navigator, 'maxTouchPoints', { get: () => 0 });
-
-    // Connection
-    Object.defineProperty(navigator, 'connection', {
-      get: () => ({
-        effectiveType: '4g',
-        rtt: 50,
-        downlink: 10,
-        saveData: false
-      })
-    });
-
-    // Battery-like object typing local to this script
-    type BatteryLike = {
-      charging: boolean;
-      chargingTime: number;
-      dischargingTime: number;
-      level: number;
-      addEventListener: (...args: unknown[]) => void;
-      removeEventListener: (...args: unknown[]) => void;
-      dispatchEvent: (e: Event) => boolean;
-    };
-    (navigator as unknown as { getBattery?: () => Promise<BatteryLike> }).getBattery = () => Promise.resolve({
-      charging: true,
-      chargingTime: 0,
-      dischargingTime: Infinity,
-      level: 0.99,
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      dispatchEvent: () => true
-    } as BatteryLike);
-
-    // WebGL Vendor
-    const getParameter = WebGLRenderingContext.prototype.getParameter;
-    WebGLRenderingContext.prototype.getParameter = function(parameter: number) {
-      if (parameter === 37445) return 'Intel Inc.';
-      if (parameter === 37446) return 'Intel Iris OpenGL Engine';
-      return getParameter.apply(this, [parameter]);
-    };
-
-    const getParameter2 = WebGL2RenderingContext.prototype.getParameter;
-    WebGL2RenderingContext.prototype.getParameter = function(parameter: number) {
-      if (parameter === 37445) return 'Intel Inc.';
-      if (parameter === 37446) return 'Intel Iris OpenGL Engine';
-      return getParameter2.apply(this, [parameter]);
-    };
-
-    // Canvas fingerprint protection using rest parameters instead of 'arguments'
-    const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
-    HTMLCanvasElement.prototype.toDataURL = function(this: HTMLCanvasElement, ...args: unknown[]): string {
-      const context = this.getContext('2d');
-      if (context) {
-        const imageData = context.getImageData(0, 0, this.width, this.height);
-        for (let i = 0; i < imageData.data.length; i += 4) {
-          imageData.data[i] = imageData.data[i] ^ 2;
+      // Override permissions using correct parameter typing
+      const originalQuery = navigator.permissions.query.bind(navigator.permissions);
+      navigator.permissions.query = (parameters: PermissionDescriptor): Promise<PermissionStatus> => {
+        if ((parameters as PermissionDescriptor).name === 'notifications') {
+          return Promise.resolve({ state: 'prompt', onchange: null } as PermissionStatus);
         }
-        context.putImageData(imageData, 0, 0);
-      }
-      return (originalToDataURL as (...a: unknown[]) => string).apply(this, args);
-    };
-
-    // Media devices
-    if (navigator.mediaDevices) {
-      navigator.mediaDevices.enumerateDevices = () => Promise.resolve([
-        { deviceId: 'default', kind: 'audioinput', label: 'Default Audio Device', groupId: 'default' } as MediaDeviceInfo,
-        { deviceId: 'communications', kind: 'audioinput', label: 'Communications Device', groupId: 'communications' } as MediaDeviceInfo,
-        { deviceId: 'default', kind: 'audiooutput', label: 'Default Audio Device', groupId: 'default' } as MediaDeviceInfo,
-      ]);
-    }
-
-    // Remove other automation traces safely without using 'any'
-    const winRecord = window as unknown as Record<string, unknown>;
-    delete winRecord['cdc_adoQpoasnfa76pfcZLmcfl_Array'];
-    delete winRecord['cdc_adoQpoasnfa76pfcZLmcfl_Promise'];
-    delete winRecord['cdc_adoQpoasnfa76pfcZLmcfl_Symbol'];
-  });
-
-  try {
-    // Start with blank page and wait
-    await page.goto('about:blank');
-    await page.waitForTimeout(randomDelay(1000, 2000));
-    
-    // Simulate some activity on blank page
-    await humanLikeMouseMove(page);
-    await page.waitForTimeout(randomDelay(500, 1000));
-
-    // Navigate to the main page
-    await page.goto('https://www.intermarche.com', { 
-      waitUntil: 'domcontentloaded',
-      timeout: 60000 
-    });
-
-    // Wait for page to settle with human-like behavior
-    await page.waitForTimeout(randomDelay(3000, 5000));
-    await humanLikeMouseMove(page);
-    await humanLikeScroll(page);
-    await page.waitForTimeout(randomDelay(1000, 2000));
-
-    // Wait for body to be ready
-    await page.waitForSelector('body', { state: 'attached', timeout: 30000 });
-    
-    // More human-like interaction
-    await humanLikeMouseMove(page);
-    await page.waitForTimeout(randomDelay(1000, 2000));
-
-    // Handle cookie consent with human-like behavior
-    try {
-      const cookieButton = await page.$('[class="didomi-continue-without-agreeing"]');
-      if (cookieButton) {
-        await humanLikeScroll(page);
-        await page.waitForTimeout(randomDelay(1000, 2000));
-        await humanLikeClick(page, '[class="didomi-continue-without-agreeing"]');
-        await page.waitForTimeout(randomDelay(2000, 3000));
-      }
-    } catch {
-      console.log('Cookie consent not found or already handled');
-    }
-
-    // More human-like browsing before store selection
-    await humanLikeScroll(page);
-    await humanLikeMouseMove(page);
-    await page.waitForTimeout(randomDelay(2000, 4000));
-
-    // Click store selection button
-    await humanLikeClick(page, '[data-testid="btn-header-prehome-store"]');
-    await page.waitForTimeout(randomDelay(2000, 3000));
-
-    // Enter postal code with human-like typing
-    await humanLikeType(page, '[class="selectAddressForStore__input"]', '75001');
-    await page.waitForTimeout(randomDelay(1500, 2500));
-
-    // Select first store
-    await humanLikeClick(page, '[data-test-auto="choisirBtn"]');
-    await page.waitForTimeout(randomDelay(3000, 4000));
-
-    // Confirm store selection if needed
-    try {
-      const confirmButton = await page.$('[data-test-auto="choisirBtn"]');
-      if (confirmButton) {
-        await humanLikeClick(page, '[data-test-auto="choisirBtn"]');
-        await page.waitForTimeout(randomDelay(3000, 4000));
-      }
-    } catch {
-      console.log('Second store confirmation not needed');
-    }
-
-    // Final human-like interactions
-    await humanLikeScroll(page);
-    await humanLikeMouseMove(page);
-
-    // Check the page structure
-    const pageStructure = await page.evaluate(() => {
-      const results = {
-        currentUrl: window.location.href,
-        hasProductLayouts: false,
-        productLayoutCount: 0,
-        hasStoreInfo: false,
-        pageTitle: document.title,
-        alternativeProductSelectors: {
-          dataTestId: document.querySelectorAll('[data-testid*="product"]').length,
-          productClass: document.querySelectorAll('[class*="product"]').length,
-          cardClass: document.querySelectorAll('[class*="card"]').length,
-        }
+        return originalQuery(parameters);
       };
 
-      const productLayouts = document.querySelectorAll('[data-testid="product-layout"]');
-      results.hasProductLayouts = productLayouts.length > 0;
-      results.productLayoutCount = productLayouts.length;
-      results.hasStoreInfo = document.querySelector('[class*="store"], [class*="magasin"]') !== null;
+      // Screen properties
+      Object.defineProperty(screen, 'colorDepth', { get: () => 24 });
+      Object.defineProperty(screen, 'pixelDepth', { get: () => 24 });
+      Object.defineProperty(window.screen, 'width', { get: () => 1920 });
+      Object.defineProperty(window.screen, 'height', { get: () => 1080 });
+      Object.defineProperty(window.screen, 'availWidth', { get: () => 1920 });
+      Object.defineProperty(window.screen, 'availHeight', { get: () => 1040 });
 
-      return results;
+      // Hardware concurrency
+      Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 });
+
+      // Device memory
+      Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 });
+
+      // Platform
+      Object.defineProperty(navigator, 'platform', { get: () => 'Win32' });
+
+      // Vendor
+      Object.defineProperty(navigator, 'vendor', { get: () => 'Google Inc.' });
+
+      // Max touch points
+      Object.defineProperty(navigator, 'maxTouchPoints', { get: () => 0 });
+
+      // Connection
+      Object.defineProperty(navigator, 'connection', {
+        get: () => ({
+          effectiveType: '4g',
+          rtt: 50,
+          downlink: 10,
+          saveData: false,
+        }),
+      });
+
+      // Battery-like object typing local to this script
+      type BatteryLike = {
+        charging: boolean;
+        chargingTime: number;
+        dischargingTime: number;
+        level: number;
+        addEventListener: (...args: unknown[]) => void;
+        removeEventListener: (...args: unknown[]) => void;
+        dispatchEvent: (e: Event) => boolean;
+      };
+      (navigator as unknown as { getBattery?: () => Promise<BatteryLike> }).getBattery = () =>
+        Promise.resolve({
+          charging: true,
+          chargingTime: 0,
+          dischargingTime: Infinity,
+          level: 0.99,
+          addEventListener: () => {},
+          removeEventListener: () => {},
+          dispatchEvent: () => true,
+        } as BatteryLike);
+
+      // WebGL Vendor
+      const getParameter = WebGLRenderingContext.prototype.getParameter;
+      WebGLRenderingContext.prototype.getParameter = function (parameter: number) {
+        if (parameter === 37445) return 'Intel Inc.';
+        if (parameter === 37446) return 'Intel Iris OpenGL Engine';
+        return getParameter.apply(this, [parameter]);
+      };
+
+      const getParameter2 = WebGL2RenderingContext.prototype.getParameter;
+      WebGL2RenderingContext.prototype.getParameter = function (parameter: number) {
+        if (parameter === 37445) return 'Intel Inc.';
+        if (parameter === 37446) return 'Intel Iris OpenGL Engine';
+        return getParameter2.apply(this, [parameter]);
+      };
+
+      // Canvas fingerprint protection using rest parameters instead of 'arguments'
+      const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
+      HTMLCanvasElement.prototype.toDataURL = function (this: HTMLCanvasElement, ...args: unknown[]): string {
+        const context = this.getContext('2d');
+        if (context) {
+          const imageData = context.getImageData(0, 0, this.width, this.height);
+          for (let i = 0; i < imageData.data.length; i += 4) {
+            imageData.data[i] = imageData.data[i] ^ 2;
+          }
+          context.putImageData(imageData, 0, 0);
+        }
+        return (originalToDataURL as (...a: unknown[]) => string).apply(this, args);
+      };
+
+      // Media devices
+      if (navigator.mediaDevices) {
+        navigator.mediaDevices.enumerateDevices = () =>
+          Promise.resolve([
+            {
+              deviceId: 'default',
+              kind: 'audioinput',
+              label: 'Default Audio Device',
+              groupId: 'default',
+            } as MediaDeviceInfo,
+            {
+              deviceId: 'communications',
+              kind: 'audioinput',
+              label: 'Communications Device',
+              groupId: 'communications',
+            } as MediaDeviceInfo,
+            {
+              deviceId: 'default',
+              kind: 'audiooutput',
+              label: 'Default Audio Device',
+              groupId: 'default',
+            } as MediaDeviceInfo,
+          ]);
+      }
+
+      // Remove other automation traces safely without using 'any'
+      const winRecord = window as unknown as Record<string, unknown>;
+      delete winRecord['cdc_adoQpoasnfa76pfcZLmcfl_Array'];
+      delete winRecord['cdc_adoQpoasnfa76pfcZLmcfl_Promise'];
+      delete winRecord['cdc_adoQpoasnfa76pfcZLmcfl_Symbol'];
     });
 
-    console.log('Page structure after store selection:', pageStructure);
-    
-    // Take a screenshot for debugging
-    await page.screenshot({ path: 'intermarche-after-store-selection.png', fullPage: true });
+    try {
+      // Start with blank page and wait
+      await page.goto('about:blank');
+      await page.waitForTimeout(randomDelay(1000, 2000));
 
-    expect(pageStructure.currentUrl).toContain('intermarche.com');
+      // Simulate some activity on blank page
+      await humanLikeMouseMove(page);
+      await page.waitForTimeout(randomDelay(500, 1000));
 
-  } catch (error) {
-    console.error('Store selection process failed:', error);
-    await page.screenshot({ path: 'intermarche-store-selection-failed.png', fullPage: true });
-    throw error;
-  } finally {
-    await browser.close();
-  }
-});
+      // Navigate to the main page
+      await page.goto('https://www.intermarche.com', {
+        waitUntil: 'domcontentloaded',
+        timeout: 60000,
+      });
+
+      // Wait for page to settle with human-like behavior
+      await page.waitForTimeout(randomDelay(3000, 5000));
+      await humanLikeMouseMove(page);
+      await humanLikeScroll(page);
+      await page.waitForTimeout(randomDelay(1000, 2000));
+
+      // Wait for body to be ready
+      await page.waitForSelector('body', { state: 'attached', timeout: 30000 });
+
+      // More human-like interaction
+      await humanLikeMouseMove(page);
+      await page.waitForTimeout(randomDelay(1000, 2000));
+
+      // Handle cookie consent with human-like behavior
+      try {
+        const cookieButton = await page.$('[class="didomi-continue-without-agreeing"]');
+        if (cookieButton) {
+          await humanLikeScroll(page);
+          await page.waitForTimeout(randomDelay(1000, 2000));
+          await humanLikeClick(page, '[class="didomi-continue-without-agreeing"]');
+          await page.waitForTimeout(randomDelay(2000, 3000));
+        }
+      } catch {
+        console.log('Cookie consent not found or already handled');
+      }
+
+      // More human-like browsing before store selection
+      await humanLikeScroll(page);
+      await humanLikeMouseMove(page);
+      await page.waitForTimeout(randomDelay(2000, 4000));
+
+      // Click store selection button
+      await humanLikeClick(page, '[data-testid="btn-header-prehome-store"]');
+      await page.waitForTimeout(randomDelay(2000, 3000));
+
+      // Enter postal code with human-like typing
+      await humanLikeType(page, '[class="selectAddressForStore__input"]', '75001');
+      await page.waitForTimeout(randomDelay(1500, 2500));
+
+      // Select first store
+      await humanLikeClick(page, '[data-test-auto="choisirBtn"]');
+      await page.waitForTimeout(randomDelay(3000, 4000));
+
+      // Confirm store selection if needed
+      try {
+        const confirmButton = await page.$('[data-test-auto="choisirBtn"]');
+        if (confirmButton) {
+          await humanLikeClick(page, '[data-test-auto="choisirBtn"]');
+          await page.waitForTimeout(randomDelay(3000, 4000));
+        }
+      } catch {
+        console.log('Second store confirmation not needed');
+      }
+
+      // Final human-like interactions
+      await humanLikeScroll(page);
+      await humanLikeMouseMove(page);
+
+      // Check the page structure
+      const pageStructure = await page.evaluate(() => {
+        const results = {
+          currentUrl: window.location.href,
+          hasProductLayouts: false,
+          productLayoutCount: 0,
+          hasStoreInfo: false,
+          pageTitle: document.title,
+          alternativeProductSelectors: {
+            dataTestId: document.querySelectorAll('[data-testid*="product"]').length,
+            productClass: document.querySelectorAll('[class*="product"]').length,
+            cardClass: document.querySelectorAll('[class*="card"]').length,
+          },
+        };
+
+        const productLayouts = document.querySelectorAll('[data-testid="product-layout"]');
+        results.hasProductLayouts = productLayouts.length > 0;
+        results.productLayoutCount = productLayouts.length;
+        results.hasStoreInfo = document.querySelector('[class*="store"], [class*="magasin"]') !== null;
+
+        return results;
+      });
+
+      console.log('Page structure after store selection:', pageStructure);
+
+      // Take a screenshot for debugging
+      await page.screenshot({ path: 'intermarche-after-store-selection.png', fullPage: true });
+
+      expect(pageStructure.currentUrl).toContain('intermarche.com');
+    } catch (error) {
+      console.error('Store selection process failed:', error);
+      await page.screenshot({ path: 'intermarche-store-selection-failed.png', fullPage: true });
+      throw error;
+    } finally {
+      await browser.close();
+    }
+  });
 });
 
 // test('step by step store selection process', async ({ page }) => {
 //   console.log('Starting step by step store selection...');
-  
+
 //   // Step 1: Go to main page
 //   await page.goto('https://www.intermarche.com');
 //   await page.waitForLoadState('networkidle');
@@ -952,7 +974,7 @@ test.describe('IntermarcheStore Tests', () => {
 //   console.log('Looking for store selection button...');
 //   // TODO: Add store selection click action here
 //   // ________________________________
-  
+
 //   await page.waitForLoadState('networkidle');
 //   await page.waitForTimeout(2000);
 //   console.log('✅ Store selection clicked');
@@ -961,7 +983,7 @@ test.describe('IntermarcheStore Tests', () => {
 //   console.log('Looking for location input...');
 //   // TODO: Add postal code input action here
 //   // ________________________________
-  
+
 //   await page.waitForLoadState('networkidle');
 //   await page.waitForTimeout(2000);
 //   console.log('✅ Postal code entered');
@@ -970,7 +992,7 @@ test.describe('IntermarcheStore Tests', () => {
 //   console.log('Looking for store list...');
 //   // TODO: Add store selection click action here
 //   // ________________________________
-  
+
 //   await page.waitForLoadState('networkidle');
 //   await page.waitForTimeout(2000);
 //   console.log('✅ Store selected');

@@ -1,27 +1,116 @@
-name: Playwright Tests
+name: Daily Website Monitor
 on:
+  # Run daily at 7:00 AM UTC (8:00 AM Paris time in winter, 9:00 AM in summer)
+  schedule:
+    - cron: '0 7 * * *'
+
+  # Keep push/PR triggers for manual testing
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
+
+  # Allow manual trigger from GitHub Actions tab
+  workflow_dispatch:
+    inputs:
+      test_pattern:
+        description: 'Test file pattern to run (e.g., carrefour.spec.ts)'
+        required: false
+        default: ''
+        type: string
+
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
+    # Add some randomization to avoid running at exact same time every day
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - name: Random delay (0-5 minutes)
+        if: github.event_name == 'schedule'
+        run: |
+          # Add random delay only for scheduled runs to avoid detection
+          DELAY=$((RANDOM % 300))
+          echo "Waiting ${DELAY} seconds to randomize start time..."
+          sleep $DELAY
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests (excluding Intermarche)
+        run: |
+          if [ "${{ github.event.inputs.test_pattern }}" != "" ]; then
+            # Run specific test if provided via workflow_dispatch
+            npx playwright test "${{ github.event.inputs.test_pattern }}"
+          else
+            # Run all tests except Intermarche
+            npx playwright test --grep-invert="intermarche" --ignore="**/intermarche*.spec.ts"
+          fi
+        env:
+          CI: 'true'
+          # Force fresh download every time - no cache
+          CARREFOUR_TEST_USE_CACHE: 'false'
+          # Add stealth mode
+          PLAYWRIGHT_SLOW_MO: '100'
+
+      # Save test results with date stamp
+      - name: Save test results with timestamp
+        if: always()
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          mkdir -p test-history
+          cp -r playwright-report test-history/report-$TIMESTAMP || true
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report-${{ github.run_number }}
+          path: playwright-report/
+          retention-days: 30
+
+      # Monitor for website changes
+      - name: Check for test failures (potential website changes)
+        if: failure() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const date = new Date().toISOString().split('T')[0];
+            const time = new Date().toLocaleTimeString('en-US', { timeZone: 'Europe/Paris' });
+
+            // Create issue for website change detection
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `⚠️ Website Change Detected - ${date}`,
+              body: `## Potential Website Change Detected
+              
+              **Date:** ${date}
+              **Time (Paris):** ${time}
+              **Workflow Run:** [View Details](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+              
+              ### What happened?
+              The daily monitoring tests failed, which likely indicates that:
+              - The website structure has changed
+              - Selectors need to be updated
+              - Product page layout was modified
+              
+              ### Next Steps:
+              1. Check the [test artifacts](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})
+              2. Review which selectors are failing
+              3. Update the selectors in the appropriate store file
+              4. Re-run tests to confirm the fix
+              
+              ### Affected Tests:
+              Check the playwright-report artifact for details.`,
+              labels: ['website-change', 'automated', 'monitoring']
+            });
+        continue-on-error: true

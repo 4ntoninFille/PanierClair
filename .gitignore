@@ -42,4 +42,4 @@ yarn-error.log*
 /playwright/.cache/
 /playwright/.auth/
 
-user_data_intermarche
+*-test-page.html
