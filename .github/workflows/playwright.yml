@@ -52,8 +52,13 @@ jobs:
             # Run specific test if provided via workflow_dispatch
             npx playwright test "${{ github.event.inputs.test_pattern }}"
           else
-            # Run all tests except Intermarche
-            npx playwright test --grep-invert="intermarche" --ignore="**/intermarche*.spec.ts"
+            # Find all spec files except intermarche* and pass them to playwright
+            FILES=$(find . -type f -name "*.spec.ts" ! -name "intermarche*.spec.ts" -print0 | xargs -0 echo)
+            if [ -z "$FILES" ]; then
+              echo "No test files found to run."
+              exit 0
+            fi
+            npx playwright test $FILES --grep-invert="intermarche"
           fi
         env:
           CI: 'true'
