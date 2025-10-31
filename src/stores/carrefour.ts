@@ -15,8 +15,8 @@ export class CarrefourStore extends BaseStore {
    * Check if this store is active on the current page
    */
   isActive(): boolean {
-    // Check for Carrefour-specific elements
-    return document.querySelector('article.product-list-card-plp-grid') !== null;
+    // match either product-list-card-plp-grid or product-list-card-plp-grid-new (or similar variants)
+    return document.querySelector('article[class*="product-list-card-plp-grid"]') !== null;
   }
 
   /**
@@ -25,7 +25,8 @@ export class CarrefourStore extends BaseStore {
   getProductElementsAndBarcodes(): ProductWithBarcode[] {
     const results: ProductWithBarcode[] = [];
 
-    document.querySelectorAll<HTMLElement>('article.product-list-card-plp-grid').forEach(productElement => {
+    // use attribute-contains selector so it matches both old and new class variants
+    document.querySelectorAll<HTMLElement>('article[class*="product-list-card-plp-grid"]').forEach(productElement => {
       const productLink = productElement.querySelector(
         'a.c-link.product-card-click-wrapper',
       ) as HTMLAnchorElement | null;
@@ -47,7 +48,7 @@ export class CarrefourStore extends BaseStore {
     // TODO: Implement loader insertion logic without causing bugs
     void productElement;
     void loader;
-    // const infosElement = productElement.querySelector('.product-list-card-plp-grid__infos');
+    // const infosElement = productElement.querySelector('.class="product-list-card-plp-grid-new"__infos');
     // if (infosElement) {
     //   infosElement.appendChild(loader);
     // } else {
