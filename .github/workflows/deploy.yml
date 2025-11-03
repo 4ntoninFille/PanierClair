@@ -41,8 +41,8 @@ jobs:
 
           # Verify the versions were updated
           echo "Package.json version: $(node -p "require('./package.json').version")"
-          echo "Chrome manifest version: $(node -p "require('./manifest.chrome.json').version")"
-          echo "Firefox manifest version: $(node -p "require('./manifest.firefox.json').version")"
+          echo "Chrome manifest version: $(node -p "require('./public/manifest.chrome.json').version")"
+          echo "Firefox manifest version: $(node -p "require('./public/manifest.firefox.json').version")"
 
       - name: Build extension
         run: npm run build
