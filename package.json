@@ -1,11 +1,13 @@
 {
   "name": "panierclair",
-  "version": "1.0.0",
+  "version": "0.4.1",
   "description": "This is a web extension made to reveal online food drive nutriscore and carbone impact.",
   "main": "index.js",
   "scripts": {
     "build:chrome": "webpack --env browser=chrome",
     "build:firefox": "webpack --env browser=firefox",
+    "sync-version": "npx ts-node ./scripts/sync-versions.ts",
+    "prebuild": "npm run sync-version",
     "build": "npm run build:chrome && npm run build:firefox",
     "watch:chrome": "webpack --config webpack.config.mjs --watch --env browser=chrome",
     "watch:firefox": "webpack --config webpack.config.mjs --watch --env browser=firefox",
