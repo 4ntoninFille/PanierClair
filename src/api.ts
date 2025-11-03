@@ -5,6 +5,7 @@ export type ProductInfo = {
   name: string;
   nutriScore: string;
   ecoScore: string;
+  novaGroup: string;
 };
 
 const convertProductInfo = (data: {
@@ -12,12 +13,14 @@ const convertProductInfo = (data: {
   product_name: string;
   nutriscore_grade: string;
   ecoscore_grade: string;
+  nova_group: string;
 }): ProductInfo => {
   return {
     barcode: data.code,
     name: data.product_name,
     nutriScore: data.nutriscore_grade || 'Na',
     ecoScore: data.ecoscore_grade || 'Na',
+    novaGroup: data.nova_group || 'Na',
   };
 };
 

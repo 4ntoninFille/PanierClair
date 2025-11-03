@@ -7,6 +7,7 @@ export interface ProductInfo {
   name: string;
   nutriScore: string;
   ecoScore: string;
+  novaGroup: string;
 }
 
 export interface ProductWithBarcode {

@@ -11,6 +11,7 @@ import { CarrefourStore } from './stores/carrefour';
 import { debounce } from './shared/utils';
 
 let panierclairEnabled = false;
+let panierclairCompact = false;
 let currentStore: BaseStore | null = null;
 
 /**
@@ -36,7 +37,8 @@ function initializeStore(): void {
  */
 function processProductGrid(): void {
   if (currentStore && panierclairEnabled) {
-    currentStore.processProductGrid();
+    currentStore.processProductGrid(panierclairCompact);
+    console.log('Processed product grid');
   }
 }
 
@@ -67,14 +69,25 @@ function initialize(): void {
 /**
  * Handle messages from popup/background script
  */
-chrome.runtime.onMessage.addListener((message: { type: string; enabled?: boolean }) => {
+chrome.runtime.onMessage.addListener((message: { type: string; enabled?: boolean; compact?: boolean }) => {
   if (message.type === 'panierclair-toggle') {
-    panierclairEnabled = panierclairEnabled ? false : true;
-    const show = message.enabled;
+    panierclairEnabled = message.enabled !== undefined ? message.enabled : !panierclairEnabled;
+    const show = panierclairEnabled;
     document.querySelectorAll('.panierclair-info').forEach(el => {
       (el as HTMLElement).style.display = show ? '' : 'none';
     });
     if (show) {
+      processProductGrid();
+    }
+  }
+
+  if (message.type === 'panierclair-compact') {
+    panierclairCompact = message.compact !== undefined ? message.compact : !panierclairCompact;
+    document.body.classList.toggle('panierclair-compact', panierclairCompact);
+    console.log('Compact mode set to:', panierclairCompact);
+
+    // If extension is enabled, reprocess the grid to apply compact styling
+    if (panierclairEnabled) {
       processProductGrid();
     }
   }
@@ -83,20 +96,25 @@ chrome.runtime.onMessage.addListener((message: { type: string; enabled?: boolean
 /**
  * Initialize extension state from storage and start
  */
-chrome.storage.local.get(['panierclairEnabled'], (result: { panierclairEnabled?: boolean }) => {
-  panierclairEnabled = result.panierclairEnabled !== undefined ? result.panierclairEnabled : true;
-  document.querySelectorAll('.panierclair-info').forEach(el => {
-    (el as HTMLElement).style.display = panierclairEnabled ? '' : 'none';
-  });
+chrome.storage.local.get(
+  ['panierclairEnabled', 'panierclairCompact'],
+  (result: { panierclairEnabled?: boolean; panierclairCompact?: boolean }) => {
+    panierclairEnabled = result.panierclairEnabled !== undefined ? result.panierclairEnabled : true;
+    panierclairCompact = result.panierclairCompact !== undefined ? result.panierclairCompact : false;
 
-  initialize();
+    document.querySelectorAll('.panierclair-info').forEach(el => {
+      (el as HTMLElement).style.display = panierclairEnabled ? '' : 'none';
+    });
 
-  if (panierclairEnabled && currentStore) {
-    console.log(`PanierClair is enabled for ${currentStore.getName()}`);
-    processProductGrid();
-  } else {
-    console.log('PanierClair is disabled: ', result.panierclairEnabled);
-  }
-});
+    initialize();
+
+    if (panierclairEnabled && currentStore) {
+      console.log(`PanierClair is enabled for ${currentStore.getName()}`);
+      processProductGrid();
+    } else {
+      console.log('PanierClair is disabled: ', result.panierclairEnabled);
+    }
+  },
+);
 
 console.log('Content script done');

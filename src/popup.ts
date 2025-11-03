@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
   const themeSwitch = document.getElementById('themeSwitch') as HTMLInputElement | null;
+  const compactSwitch = document.getElementById('compactSwitch') as HTMLInputElement | null;
   const infoBtn = document.getElementById('infoBtn') as HTMLButtonElement | null;
   const infoBox = document.getElementById('infoBox') as HTMLDivElement | null;
   const toggleBtn = document.getElementById('toggleExtension') as HTMLButtonElement | null;
@@ -23,6 +24,27 @@ document.addEventListener('DOMContentLoaded', () => {
   if (infoBtn && infoBox) {
     infoBtn.addEventListener('click', () => {
       infoBox.hidden = !infoBox.hidden;
+    });
+  }
+
+  // Compact switch handler
+  if (compactSwitch) {
+    // Load saved compact mode preference
+    chrome.storage.local.get(['panierclairCompact'], result => {
+      const compact = result.panierclairCompact !== undefined ? result.panierclairCompact : false;
+      compactSwitch.checked = compact;
+    });
+
+    compactSwitch.addEventListener('change', () => {
+      const isCompact = compactSwitch.checked;
+      chrome.storage.local.set({ panierclairCompact: isCompact });
+
+      // Send message to content script to apply compact mode
+      chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+        if (tabs[0]?.id) {
+          chrome.tabs.sendMessage(tabs[0].id, { type: 'panierclair-compact', compact: isCompact });
+        }
+      });
     });
   }
 
