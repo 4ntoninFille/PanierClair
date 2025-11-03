@@ -34,16 +34,6 @@ jobs:
         run: |
           npm version ${{ steps.version.outputs.version }} --no-git-tag-version --allow-same-version
 
-      - name: Sync versions to manifests
-        run: |
-          # This runs your sync script to update manifest files
-          node scripts/sync-versions.js
-
-          # Verify the versions were updated
-          echo "Package.json version: $(node -p "require('./package.json').version")"
-          echo "Chrome manifest version: $(node -p "require('./public/manifest.chrome.json').version")"
-          echo "Firefox manifest version: $(node -p "require('./public/manifest.firefox.json').version")"
-
       - name: Build extension
         run: npm run build
 
