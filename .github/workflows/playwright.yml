@@ -5,8 +5,6 @@ on:
     - cron: '0 7 * * *'
 
   # Keep push/PR triggers for manual testing
-  push:
-    branches: [main, master]
   pull_request:
     branches: [main, master]
 
