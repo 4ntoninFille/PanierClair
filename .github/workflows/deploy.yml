@@ -105,7 +105,6 @@ jobs:
 
       - name: Deploy to Chrome Web Store
         uses: trmcnvn/chrome-addon@v2
-        continue-on-error: true
         with:
           extension: ${{ secrets.CHROME_EXTENSION_ID }}
           zip: dist/chrome-extension.zip
@@ -115,7 +114,6 @@ jobs:
 
       - name: Deploy to Firefox Add-ons
         uses: trmcnvn/firefox-addon@v1
-        continue-on-error: true
         with:
           api-key: ${{ secrets.FIREFOX_API_KEY }}
           api-secret: ${{ secrets.FIREFOX_API_SECRET }}
