@@ -121,3 +121,4 @@ jobs:
           api-secret: ${{ secrets.FIREFOX_API_SECRET }}
           uuid: ${{ secrets.FIREFOX_EXTENSION_UUID }}
           xpi: dist/firefox-extension.xpi
+          manifest: dist/firefox/manifest.json
