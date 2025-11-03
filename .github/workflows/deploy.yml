@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -38,7 +38,7 @@ jobs:
         run: |
           # This runs your sync script to update manifest files
           node scripts/sync-versions.js
-          
+
           # Verify the versions were updated
           echo "Package.json version: $(node -p "require('./package.json').version")"
           echo "Chrome manifest version: $(node -p "require('./manifest.chrome.json').version")"
@@ -50,44 +50,44 @@ jobs:
       - name: Create versioned archives
         run: |
           VERSION="${{ steps.version.outputs.version }}"
-          
+
           cd dist
-          
+
           if [ -d "chrome" ]; then
             (cd chrome && zip -r ../chrome-extension.zip .)
             cp chrome-extension.zip chrome-extension-v$VERSION.zip
           else
             echo "Warning: no Chrome artifact found in dist"
           fi
-          
+
           if [ -d "firefox" ]; then
             (cd firefox && zip -r ../firefox-extension.xpi .)
             cp firefox-extension.xpi firefox-extension-v$VERSION.xpi
           else
             echo "Warning: no Firefox artifact found in dist"
           fi
-          
+
           cd ..
 
       - name: Generate changelog
         id: changelog
         run: |
           PREVIOUS_TAG=$(git tag --sort=-creatordate | grep -A1 ${{ steps.version.outputs.tag }} | tail -1)
-          
+
           if [ -z "$PREVIOUS_TAG" ] || [ "$PREVIOUS_TAG" = "${{ steps.version.outputs.tag }}" ]; then
             COMMITS=$(git log --pretty=format:"- %s (%h)" --no-merges)
           else
             COMMITS=$(git log $PREVIOUS_TAG..${{ steps.version.outputs.tag }} --pretty=format:"- %s (%h)" --no-merges)
           fi
-          
+
           cat > CHANGELOG.txt << EOF
           Version ${{ steps.version.outputs.version }}
           Released: $(date +%Y-%m-%d)
-          
+
           Changes since $PREVIOUS_TAG:
           $COMMITS
           EOF
-          
+
           echo "changelog<<EOF" >> $GITHUB_OUTPUT
           echo "$COMMITS" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -99,11 +99,11 @@ jobs:
           name: Release ${{ steps.version.outputs.version }}
           body: |
             ## 🚀 Release ${{ steps.version.outputs.version }}
-            
+
             ### 📦 Downloads
             - [Chrome Extension](https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/chrome-extension-v${{ steps.version.outputs.version }}.zip)
             - [Firefox Extension](https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.tag }}/firefox-extension-v${{ steps.version.outputs.version }}.xpi)
-            
+
             ### 📝 Changes
             ${{ steps.changelog.outputs.changelog }}
           files: |
