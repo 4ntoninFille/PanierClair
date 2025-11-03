@@ -98,11 +98,7 @@ export function getNovaGroupImagePath(score: string, variant: Variant = 'full'):
  * Function to get score display with image
  * Accepts optional variant to request icon-sized assets and adjusts height accordingly.
  */
-export function getScoreDisplay(
-  score: string,
-  scoreType: 'nutri' | 'eco' | 'nova',
-  variant: Variant = 'full',
-): string {
+export function getScoreDisplay(score: string, scoreType: 'nutri' | 'eco' | 'nova', variant: Variant = 'full'): string {
   let imagePath: string;
   switch (scoreType) {
     case 'eco':
