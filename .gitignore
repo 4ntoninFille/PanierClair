@@ -43,3 +43,5 @@ yarn-error.log*
 /playwright/.auth/
 
 *-test-page.html
+
+chrome-profile
