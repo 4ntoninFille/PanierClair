@@ -14,7 +14,8 @@ export function extractBarcodeFromURL(url: string): string | null {
  * Function to extract barcode from Carrefour-style URLs (ends with -<digits>)
  */
 export function extractBarcodeFromCarrefourURL(url: string): string | null {
-  const match = url.match(/-(\d{8,14})$/);
+  const cleanUrl = url.split('?')[0].split('#')[0];
+  const match = cleanUrl.match(/-(\d{8,14})$/);
   return match ? match[1] : null;
 }
 

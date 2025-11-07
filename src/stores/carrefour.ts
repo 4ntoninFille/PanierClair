@@ -20,6 +20,29 @@ export class CarrefourStore extends BaseStore {
   }
 
   /**
+   * Extract barcode from article HTML content as last resort
+   */
+  private extractBarcodeFromArticleHTML(productElement: HTMLElement): string | null {
+    // Search for 13-digit barcodes in the article's HTML
+    const htmlContent = productElement.innerHTML;
+    const barcodeMatches = htmlContent.match(/\b\d{13}\b/g);
+
+    if (barcodeMatches && barcodeMatches.length > 0) {
+      // Return the first 13-digit number found
+      // (often barcodes are EAN-13 format)
+      return barcodeMatches[0];
+    }
+
+    // Also try 8-digit barcodes (EAN-8)
+    const shortBarcodeMatches = htmlContent.match(/\b\d{8}\b/g);
+    if (shortBarcodeMatches && shortBarcodeMatches.length > 0) {
+      return shortBarcodeMatches[0];
+    }
+
+    return null;
+  }
+
+  /**
    * Get product elements and their barcodes for Carrefour
    */
   getProductElementsAndBarcodes(): ProductWithBarcode[] {
@@ -27,12 +50,28 @@ export class CarrefourStore extends BaseStore {
 
     // use attribute-contains selector so it matches both old and new class variants
     document.querySelectorAll<HTMLElement>('article[class*="product-list-card-plp-grid"]').forEach(productElement => {
-      const productLink = productElement.querySelector(
-        'a.c-link.product-card-click-wrapper',
-      ) as HTMLAnchorElement | null;
-      const href = productLink?.getAttribute('href');
-      // Barcode is at the end of the URL, after the last '-'
-      const barcode = href ? extractBarcodeFromCarrefourURL(href) : null;
+      let barcode: string | null = null;
+
+      // Method 1: Try article ID first
+      const articleId = productElement.id;
+      if (articleId && /^\d{8,14}$/.test(articleId)) {
+        barcode = articleId;
+      }
+
+      // Method 2: Fallback to URL extraction if ID doesn't work
+      if (!barcode) {
+        const productLink = productElement.querySelector(
+          'a.c-link.product-card-click-wrapper',
+        ) as HTMLAnchorElement | null;
+        const href = productLink?.getAttribute('href');
+        barcode = href ? extractBarcodeFromCarrefourURL(href) : null;
+      }
+
+      // Method 3: Last resort - search in article HTML
+      if (!barcode) {
+        barcode = this.extractBarcodeFromArticleHTML(productElement);
+      }
+
       if (barcode) {
         results.push({ productElement, barcode });
       }
