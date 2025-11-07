@@ -18,20 +18,13 @@
     "128": "icons/icon-128.png"
   },
   "background": {
-    "scripts": [
-      "background.js"
-    ],
+    "scripts": ["background.js"],
     "persistent": false
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://www.intermarche.com/*",
-        "https://www.carrefour.fr/*"
-      ],
-      "js": [
-        "content.js"
-      ]
+      "matches": ["https://www.intermarche.com/*", "https://www.carrefour.fr/*"],
+      "js": ["content.js"]
     }
   ],
   "browser_action": {
@@ -41,7 +34,5 @@
       "32": "icons/icon-32.png"
     }
   },
-  "web_accessible_resources": [
-    "assets/*"
-  ]
+  "web_accessible_resources": ["assets/*"]
 }
