@@ -1,8 +1,8 @@
 name: Daily Website Monitor
 on:
   # Run daily at 7:00 AM UTC (8:00 AM Paris time in winter, 9:00 AM in summer)
-  schedule:
-    - cron: '0 7 * * *'
+  # schedule:
+  #  - cron: '0 7 * * *'
 
   # Keep push/PR triggers for manual testing
   pull_request:
