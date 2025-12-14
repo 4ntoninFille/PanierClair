@@ -134,6 +134,116 @@ input:checked + .slider:before {
   text-decoration: underline;
 }
 
+.filters-section {
+  margin: 14px 22px 18px 22px;
+  padding: 16px;
+  background: var(--info-bg);
+  border-radius: var(--border-radius);
+  box-shadow:
+    0 4px 6px -1px var(--shadow-color),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb; /* gray-200 */
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.filter-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-label {
+  font-size: 0.95em;
+  font-weight: 500;
+  color: var(--text-color);
+  flex: 1;
+}
+
+.filter-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 180px;
+}
+
+.or-better-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-size: 0.85em;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: var(--text-secondary);
+  transition: color 0.2s;
+}
+
+.checkbox-label:hover {
+  color: var(--text-color);
+}
+
+.filter-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.checkbox-text {
+  user-select: none;
+}
+
+.checkbox-row {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #e5e7eb;
+}
+
+body.night .checkbox-row {
+  border-top-color: #374151;
+}
+
+.filter-select {
+  flex: 1;
+  min-width: 100px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db; /* gray-300 */
+  border-radius: 8px;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: all 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234b5563' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 32px;
+}
+
+.filter-select:hover {
+  border-color: var(--accent-color);
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(62, 163, 75, 0.1);
+}
+
 .toggle-row {
   display: flex;
   justify-content: center;
@@ -178,4 +288,13 @@ body.night .slider {
 
 body.night .info-box {
   border: 1px solid #374151; /* gray-700 for dark mode */
+}
+
+body.night .filters-section {
+  border: 1px solid #374151; /* gray-700 for dark mode */
+}
+
+body.night .filter-select {
+  border-color: #6b7280; /* gray-500 for dark mode */
+  background-color: var(--bg-color);
 }

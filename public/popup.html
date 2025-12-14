@@ -24,6 +24,66 @@
       </label>
       <span class="switch-label">Mode compact</span>
     </div> -->
+    <div class="filters-section">
+      <div class="filter-row">
+        <label for="nutriscoreFilter" class="filter-label">Nutri-score</label>
+        <div class="filter-controls">
+          <select id="nutriscoreFilter" class="filter-select">
+            <option value="any">Tous</option>
+            <option value="a">A</option>
+            <option value="b">B</option>
+            <option value="c">C</option>
+            <option value="d">D</option>
+            <option value="e">E</option>
+          </select>
+          <label class="or-better-checkbox">
+            <input type="checkbox" id="nutriscoreOnly" class="filter-checkbox" />
+            <span class="checkbox-text">uniquement</span>
+          </label>
+        </div>
+      </div>
+      <div class="filter-row">
+        <label for="ecoscoreFilter" class="filter-label">Eco-score</label>
+        <div class="filter-controls">
+          <select id="ecoscoreFilter" class="filter-select">
+            <option value="any">Tous</option>
+            <option value="a+">A+</option>
+            <option value="a">A</option>
+            <option value="b">B</option>
+            <option value="c">C</option>
+            <option value="d">D</option>
+            <option value="e">E</option>
+            <option value="f">F</option>
+          </select>
+          <label class="or-better-checkbox">
+            <input type="checkbox" id="ecoscoreOnly" class="filter-checkbox" />
+            <span class="checkbox-text">uniquement</span>
+          </label>
+        </div>
+      </div>
+      <div class="filter-row">
+        <label for="novaFilter" class="filter-label">Nova</label>
+        <div class="filter-controls">
+          <select id="novaFilter" class="filter-select">
+            <option value="any">Tous</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+          <label class="or-better-checkbox">
+            <input type="checkbox" id="novaOnly" class="filter-checkbox" />
+            <span class="checkbox-text">uniquement</span>
+          </label>
+        </div>
+      </div>
+      <div class="filter-row checkbox-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="greyFilterUnknown" class="filter-checkbox" />
+          <span class="checkbox-text">Griser les produits inconnus</span>
+        </label>
+      </div>
+    </div>
     <div id="infoBox" class="info-box" hidden>
       <h2>Le saviez-vous ?</h2>
       <p>
