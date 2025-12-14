@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
       novaOnly: false,
       greyFilterUnknown: false,
     };
-    
+
     if (nutriscoreFilter) nutriscoreFilter.value = filters.nutriscore || 'any';
     if (ecoscoreFilter) ecoscoreFilter.value = filters.ecoscore || 'any';
     if (novaFilter) novaFilter.value = filters.nova || 'any';

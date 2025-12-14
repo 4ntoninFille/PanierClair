@@ -117,8 +117,8 @@ function applyFilters(): void {
   }
 
   const productElements = document.querySelectorAll('[data-panierclair-nutriscore]');
-  
-  productElements.forEach((element) => {
+
+  productElements.forEach(element => {
     const productElement = element as HTMLElement;
     const nutriScore = productElement.getAttribute('data-panierclair-nutriscore') || '';
     const ecoScore = productElement.getAttribute('data-panierclair-ecoscore') || '';
@@ -130,7 +130,7 @@ function applyFilters(): void {
     if (currentFilters.nutriscore !== 'any') {
       const normalizedNutri = nutriScore.toLowerCase();
       const filterNutri = currentFilters.nutriscore.toLowerCase();
-      
+
       // Skip unknown/not-applicable/na
       if (normalizedNutri === 'unknown' || normalizedNutri === 'not-applicable' || normalizedNutri === 'na') {
         matchesFilter = false;
@@ -144,7 +144,7 @@ function applyFilters(): void {
         const nutriOrder = { a: 1, b: 2, c: 3, d: 4, e: 5 };
         const productNutriValue = nutriOrder[normalizedNutri as keyof typeof nutriOrder];
         const filterNutriValue = nutriOrder[filterNutri as keyof typeof nutriOrder];
-        
+
         // Product matches if its value is <= filter value (better or equal)
         if (productNutriValue === undefined || filterNutriValue === undefined || productNutriValue > filterNutriValue) {
           matchesFilter = false;
@@ -156,7 +156,7 @@ function applyFilters(): void {
     if (matchesFilter && currentFilters.ecoscore !== 'any') {
       const normalizedEco = ecoScore.toLowerCase();
       const filterEco = currentFilters.ecoscore.toLowerCase();
-      
+
       // Skip unknown/not-applicable/na
       if (normalizedEco === 'unknown' || normalizedEco === 'not-applicable' || normalizedEco === 'na') {
         matchesFilter = false;
@@ -170,7 +170,7 @@ function applyFilters(): void {
         const ecoOrder: Record<string, number> = { 'a+': 0.5, a: 1, b: 2, c: 3, d: 4, e: 5, f: 6 };
         const productEcoValue = ecoOrder[normalizedEco];
         const filterEcoValue = ecoOrder[filterEco];
-        
+
         // Product matches if its value is <= filter value (better or equal)
         if (productEcoValue === undefined || filterEcoValue === undefined || productEcoValue > filterEcoValue) {
           matchesFilter = false;
@@ -182,7 +182,7 @@ function applyFilters(): void {
     if (matchesFilter && currentFilters.nova !== 'any') {
       const normalizedNova = nova.toLowerCase();
       const filterNova = currentFilters.nova.toLowerCase();
-      
+
       // Skip unknown/not-applicable/na
       if (normalizedNova === 'unknown' || normalizedNova === 'not-applicable' || normalizedNova === 'na') {
         matchesFilter = false;
@@ -195,7 +195,7 @@ function applyFilters(): void {
         // Default: "or better" logic - show products with better or equal score
         const productNovaValue = parseInt(normalizedNova);
         const filterNovaValue = parseInt(filterNova);
-        
+
         // Product matches if its value is <= filter value (better or equal)
         if (isNaN(productNovaValue) || isNaN(filterNovaValue) || productNovaValue > filterNovaValue) {
           matchesFilter = false;
@@ -207,13 +207,13 @@ function applyFilters(): void {
     const normalizedNutri = nutriScore.toLowerCase();
     const normalizedEco = ecoScore.toLowerCase();
     const normalizedNova = nova.toLowerCase();
-    
+
     // Helper function to check if a score is unknown/not-applicable
     const isUnknownScore = (score: string): boolean => {
       const normalized = score.toLowerCase();
       return normalized === 'unknown' || normalized === 'not-applicable' || normalized === 'na';
     };
-    
+
     // Check if product has unknown score for an active filter
     // If a filter is active and the corresponding score is unknown, it should be greyed if checkbox is checked
     const hasUnknownForActiveFilter =
@@ -231,9 +231,9 @@ function applyFilters(): void {
       //   * If product has unknown for active filter AND greyFilterUnknown is NOT checked: don't grey it out (show normally)
       //   * If product is NOT unknown: grey it out (normal behavior)
       // - If product matches filter BUT has unknown for active filter AND greyFilterUnknown is checked: grey it out
-      
+
       let shouldGreyOut = false;
-      
+
       if (!matchesFilter) {
         // Product doesn't match filter
         if (hasUnknownForActiveFilter) {
@@ -248,7 +248,7 @@ function applyFilters(): void {
         shouldGreyOut = true;
       }
       // If matchesFilter is true and no unknown for active filter, shouldGreyOut stays false (don't grey it out)
-      
+
       if (shouldGreyOut) {
         productContainer.classList.add('panierclair-filtered-out');
       } else {
@@ -290,60 +290,87 @@ function findProductContainer(element: HTMLElement): HTMLElement | null {
 /**
  * Handle messages from popup/background script
  */
-chrome.runtime.onMessage.addListener((message: { type: string; enabled?: boolean; compact?: boolean; filters?: { nutriscore: string; ecoscore: string; nova: string; nutriscoreOnly?: boolean; ecoscoreOnly?: boolean; novaOnly?: boolean; greyFilterUnknown?: boolean } }) => {
-  if (message.type === 'panierclair-toggle') {
-    panierclairEnabled = message.enabled !== undefined ? message.enabled : !panierclairEnabled;
-    const show = panierclairEnabled;
-    document.querySelectorAll('.panierclair-info').forEach(el => {
-      (el as HTMLElement).style.display = show ? '' : 'none';
-    });
-    if (show) {
-      processProductGrid();
-      applyFilters();
-    } else {
-      // When disabled, remove all filters
-      document.querySelectorAll('[data-panierclair-nutriscore]').forEach(el => {
-        const container = findProductContainer(el as HTMLElement);
-        if (container) {
-          container.classList.remove('panierclair-filtered-out');
-        }
-      });
-    }
-  }
-
-  if (message.type === 'panierclair-compact') {
-    panierclairCompact = message.compact !== undefined ? message.compact : !panierclairCompact;
-    document.body.classList.toggle('panierclair-compact', panierclairCompact);
-    console.log('Compact mode set to:', panierclairCompact);
-
-    // If extension is enabled, reprocess the grid to apply compact styling
-    if (panierclairEnabled) {
-      processProductGrid();
-      applyFilters();
-    }
-  }
-
-  if (message.type === 'panierclair-filters' && message.filters) {
-    currentFilters = {
-      nutriscore: message.filters.nutriscore || 'any',
-      ecoscore: message.filters.ecoscore || 'any',
-      nova: message.filters.nova || 'any',
-      nutriscoreOnly: message.filters.nutriscoreOnly || false,
-      ecoscoreOnly: message.filters.ecoscoreOnly || false,
-      novaOnly: message.filters.novaOnly || false,
-      greyFilterUnknown: message.filters.greyFilterUnknown || false,
+chrome.runtime.onMessage.addListener(
+  (message: {
+    type: string;
+    enabled?: boolean;
+    compact?: boolean;
+    filters?: {
+      nutriscore: string;
+      ecoscore: string;
+      nova: string;
+      nutriscoreOnly?: boolean;
+      ecoscoreOnly?: boolean;
+      novaOnly?: boolean;
+      greyFilterUnknown?: boolean;
     };
-    console.log('Filters updated:', currentFilters);
-    applyFilters();
-  }
-});
+  }) => {
+    if (message.type === 'panierclair-toggle') {
+      panierclairEnabled = message.enabled !== undefined ? message.enabled : !panierclairEnabled;
+      const show = panierclairEnabled;
+      document.querySelectorAll('.panierclair-info').forEach(el => {
+        (el as HTMLElement).style.display = show ? '' : 'none';
+      });
+      if (show) {
+        processProductGrid();
+        applyFilters();
+      } else {
+        // When disabled, remove all filters
+        document.querySelectorAll('[data-panierclair-nutriscore]').forEach(el => {
+          const container = findProductContainer(el as HTMLElement);
+          if (container) {
+            container.classList.remove('panierclair-filtered-out');
+          }
+        });
+      }
+    }
+
+    if (message.type === 'panierclair-compact') {
+      panierclairCompact = message.compact !== undefined ? message.compact : !panierclairCompact;
+      document.body.classList.toggle('panierclair-compact', panierclairCompact);
+      console.log('Compact mode set to:', panierclairCompact);
+
+      // If extension is enabled, reprocess the grid to apply compact styling
+      if (panierclairEnabled) {
+        processProductGrid();
+        applyFilters();
+      }
+    }
+
+    if (message.type === 'panierclair-filters' && message.filters) {
+      currentFilters = {
+        nutriscore: message.filters.nutriscore || 'any',
+        ecoscore: message.filters.ecoscore || 'any',
+        nova: message.filters.nova || 'any',
+        nutriscoreOnly: message.filters.nutriscoreOnly || false,
+        ecoscoreOnly: message.filters.ecoscoreOnly || false,
+        novaOnly: message.filters.novaOnly || false,
+        greyFilterUnknown: message.filters.greyFilterUnknown || false,
+      };
+      console.log('Filters updated:', currentFilters);
+      applyFilters();
+    }
+  },
+);
 
 /**
  * Initialize extension state from storage and start
  */
 chrome.storage.local.get(
   ['panierclairEnabled', 'panierclairCompact', 'panierclairFilters'],
-  (result: { panierclairEnabled?: boolean; panierclairCompact?: boolean; panierclairFilters?: { nutriscore: string; ecoscore: string; nova: string; nutriscoreOnly?: boolean; ecoscoreOnly?: boolean; novaOnly?: boolean; greyFilterUnknown?: boolean } }) => {
+  (result: {
+    panierclairEnabled?: boolean;
+    panierclairCompact?: boolean;
+    panierclairFilters?: {
+      nutriscore: string;
+      ecoscore: string;
+      nova: string;
+      nutriscoreOnly?: boolean;
+      ecoscoreOnly?: boolean;
+      novaOnly?: boolean;
+      greyFilterUnknown?: boolean;
+    };
+  }) => {
     panierclairEnabled = result.panierclairEnabled !== undefined ? result.panierclairEnabled : true;
     panierclairCompact = result.panierclairCompact !== undefined ? result.panierclairCompact : false;
     const savedFilters = result.panierclairFilters;

@@ -13,9 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history
+          fetch-depth: 0 # Fetch all history
           token: ${{ secrets.GITHUB_TOKEN }}
-
 
       - name: Get version from tag
         id: version
