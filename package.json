@@ -1,6 +1,6 @@
 {
   "name": "panierclair",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "This is a web extension made to reveal online food drive nutriscore and carbone impact.",
   "main": "index.js",
   "scripts": {
