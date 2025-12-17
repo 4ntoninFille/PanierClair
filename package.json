@@ -13,7 +13,10 @@
     "watch:firefox": "webpack --config webpack.config.mjs --watch --env browser=firefox",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "web-ext-chromium": "npm run watch:chrome & web-ext run -s ./dist/chrome -t chromium",
+    "web-ext-chrome": "npm run watch:chrome & web-ext run -s ./dist/chrome -t chrome",
+    "web-ext-firefox": "npm run watch:firefox & web-ext run -s ./dist/firefox -t firefox-desktop"
   },
   "keywords": [],
   "author": "",
