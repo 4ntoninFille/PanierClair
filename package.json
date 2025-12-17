@@ -14,9 +14,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "web-ext-chromium": "npm run watch:chrome & web-ext run -s ./dist/chrome -t chromium",
-    "web-ext-chrome": "npm run watch:chrome & web-ext run -s ./dist/chrome -t chrome",
-    "web-ext-firefox": "npm run watch:firefox & web-ext run -s ./dist/firefox -t firefox-desktop"
+    "web-ext-chromium": "concurrently --kill-others \"npm run watch:chrome\" \"web-ext run -s ./dist/chrome -t chromium\"",
+    "web-ext-firefox": "concurrently --kill-others \"npm run watch:firefox\" \"web-ext run -s ./dist/firefox -t firefox-desktop\""
   },
   "keywords": [],
   "author": "",
@@ -28,6 +27,7 @@
     "@playwright/test": "^1.52.0",
     "@types/chrome": "^0.0.277",
     "@types/node": "^24.7.2",
+    "concurrently": "^9.2.1",
     "copy-webpack-plugin": "^12.0.2",
     "eslint": "^9.35.0",
     "eslint-config-prettier": "^10.1.8",
