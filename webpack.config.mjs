@@ -39,6 +39,7 @@ export default env => {
           { from: `public/${manifestFile}`, to: 'manifest.json' },
           { from: `public/popup.html`, to: '.' },
           { from: `public/popup.css`, to: '.' },
+          { from: `public/content-styles.css`, to: '.' },
           { from: 'public/icons', to: 'icons' },
           { from: 'public/assets', to: 'assets' },
         ],
