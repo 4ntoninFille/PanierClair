@@ -5,6 +5,10 @@ This is a web extension made to reveal online food drive Nutriscore and carbon i
 PanierClair uses the OpenFoodFacts API for calculating the Nutriscore and carbon impact of food products. The API provides access to a large, open database of food product information that helps generate accurate nutrition and environmental data.
 OpenFoodFacts
 
+## License
+
+Distributed under the Apache 2.0 License. See `LICENSE` file for more information.
+
 ## How to Build
 
 Follow these steps to build PanierClair:
@@ -63,7 +67,9 @@ for Firefox.
 - Reload the extension in your browser to see the changes.
 
 Alternatively, you can use web-ext (make sure to [have it installed](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/)) instead of reloading manually the extension. This command will both benefit from auto-rebuilding on file changes, and from auto-reloading the extension.
+
 ```shell
 npm run web-ext-chromium
 ```
+
 (also exists for firefox)
