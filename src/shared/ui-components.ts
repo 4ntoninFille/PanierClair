@@ -37,16 +37,16 @@ export function createProductInfo(
 
   infoElement.innerHTML += `
     ${interrogationLink}
-    <div style="width: 100%; display: flex; flex-direction: row; align-items: center; justify-content: flex-start; position: relative;">
+    <div class="score-row-container">
       <div class="score-row">
-      	<a href="${openFoodFactsUrl}#panel_group_nutrition" target="_blank" rel="noopener noreferrer">
-        	${getScoreDisplay(nutriScore, 'nutri', isCompact ? 'icon' : 'full').replace('<svg', '<svg class="score-svg"')}
+      	<a href="${openFoodFactsUrl}#health" target="_blank" rel="noopener noreferrer">
+        	${getScoreDisplay(nutriScore, 'nutri', isCompact ? 'icon' : 'full')}
         </a>
-        <a href="${openFoodFactsUrl}#panel_environment_card" target="_blank" rel="noopener noreferrer">
-        	${getScoreDisplay(ecoScore, 'eco', isCompact ? 'icon' : 'full').replace('<svg', '<svg class="score-svg"')}
+        <a href="${openFoodFactsUrl}#environment  " target="_blank" rel="noopener noreferrer">
+        	${getScoreDisplay(ecoScore, 'eco', isCompact ? 'icon' : 'full')}
         </a>
-        <a href="${openFoodFactsUrl}#panel_nova" target="_blank" rel="noopener noreferrer">
-        	${getScoreDisplay(novaGroup, 'nova', isCompact ? 'icon' : 'full').replace('<svg', '<svg class="score-svg"')}
+        <a href="${openFoodFactsUrl}#health" target="_blank" rel="noopener noreferrer">
+        	${getScoreDisplay(novaGroup, 'nova', isCompact ? 'icon' : 'full')}
         </a>
       </div>
     </div>
