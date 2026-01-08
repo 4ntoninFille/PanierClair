@@ -113,8 +113,7 @@ export function getScoreDisplay(score: string, scoreType: 'nutri' | 'eco' | 'nov
       imagePath = getNutriScoreImagePath(score, variant);
   }
 
-  const height = variant === 'icon' ? 24 : 50; // icon smaller by default
-  return `<img src="${imagePath}" alt="${score.toUpperCase()} Score" style="height: ${height}px; vertical-align: middle;" />`;
+  return `<img src="${imagePath}" alt="${score.toUpperCase()} Score"  />`;
 }
 
 /**
