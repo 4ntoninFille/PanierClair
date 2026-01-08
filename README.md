@@ -45,6 +45,7 @@ npm run watch:firefox
 ```
 for Firefox.
 
+
 ## Loading PanierClair in Your Browser
 
 ### Chrome
@@ -64,3 +65,11 @@ for Firefox.
 - Make changes to the TypeScript files in the `src` folder.
 - The extension will automatically rebuild if you're running `npm run watch`.
 - Reload the extension in your browser to see the changes.
+
+Alternatively, you can use web-ext (make sure to [have it installed](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/)) instead of reloading manually the extension. This command will both benefit from auto-rebuilding on file changes, and from auto-reloading the extension.
+
+```shell
+npm run web-ext-chromium
+```
+
+(also exists for firefox)

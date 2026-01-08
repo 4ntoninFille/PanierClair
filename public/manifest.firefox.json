@@ -1,9 +1,15 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "version": "0.5.3",
   "name": "PanierClair",
-  "permissions": [
-    "storage",
+  "permissions": ["storage"],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "host_permissions": [
     "https://world.openfoodfacts.net/*",
     "http://127.0.0.1/*",
     "https://aletheia-server-1038641305939.europe-west9.run.app/*",
@@ -11,30 +17,16 @@
     "https://www.intermarche.com/*",
     "https://www.carrefour.fr/"
   ],
-  "icons": {
-    "16": "icons/icon-16.png",
-    "32": "icons/icon-32.png",
-    "48": "icons/icon-48.png",
-    "128": "icons/icon-128.png"
-  },
   "background": {
-    "scripts": [
-      "background.js"
-    ],
-    "persistent": false
+    "scripts": ["background.js"]
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://www.intermarche.com/*",
-        "https://www.carrefour.fr/*"
-      ],
-      "js": [
-        "content.js"
-      ]
+      "matches": ["https://www.intermarche.com/*", "https://www.carrefour.fr/*"],
+      "js": ["content.js"]
     }
   ],
-  "browser_action": {
+  "action": {
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon-16.png",
@@ -42,6 +34,9 @@
     }
   },
   "web_accessible_resources": [
-    "assets/*"
+    {
+      "resources": ["assets/*"],
+      "matches": ["https://www.intermarche.com/*", "https://www.carrefour.fr/*"]
+    }
   ]
 }

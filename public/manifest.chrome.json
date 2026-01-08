@@ -2,9 +2,7 @@
   "manifest_version": 3,
   "version": "0.5.3",
   "name": "PanierClair",
-  "permissions": [
-    "storage"
-  ],
+  "permissions": ["storage"],
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
@@ -24,13 +22,8 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://www.intermarche.com/*",
-        "https://www.carrefour.fr/*"
-      ],
-      "js": [
-        "content.js"
-      ]
+      "matches": ["https://www.intermarche.com/*", "https://www.carrefour.fr/*"],
+      "js": ["content.js"]
     }
   ],
   "action": {
@@ -42,13 +35,8 @@
   },
   "web_accessible_resources": [
     {
-      "resources": [
-        "assets/*"
-      ],
-      "matches": [
-        "https://www.intermarche.com/*",
-        "https://www.carrefour.fr/*"
-      ]
+      "resources": ["assets/*"],
+      "matches": ["https://www.intermarche.com/*", "https://www.carrefour.fr/*"]
     }
   ]
 }
