@@ -23,7 +23,17 @@ export default defineConfig([
     },
   },
   tseslint.configs.recommended,
- /* eslint-disable @typescript-eslint/no-explicit-any */ { files: ['**/*.md'], plugins: { markdown } as any, language: 'markdown/gfm', extends: ['markdown/recommended'] },
- /* eslint-disable @typescript-eslint/no-explicit-any */ { files: ['**/*.css'], plugins: { css } as any, language: 'css/css', extends: ['css/recommended'] }, 
+  /* eslint-disable @typescript-eslint/no-explicit-any */ {
+    files: ['**/*.md'],
+    plugins: { markdown } as any,
+    language: 'markdown/gfm',
+    extends: ['markdown/recommended'],
+  },
+  /* eslint-disable @typescript-eslint/no-explicit-any */ {
+    files: ['**/*.css'],
+    plugins: { css } as any,
+    language: 'css/css',
+    extends: ['css/recommended'],
+  },
   eslintConfigPrettier,
 ]);
